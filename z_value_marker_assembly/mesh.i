@@ -34,7 +34,7 @@ AXIAL_DIVISIONS          = 6
       
   
       flat_side_up = false
-      quad_center_elements = false
+      quad_center_elements = true
       preserve_volumes = true
   
       create_outward_interface_boundaries = true

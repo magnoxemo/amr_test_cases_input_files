@@ -1,0 +1,38 @@
+FROM ubuntu:24.04 AS cardinal-conda-base
+
+RUN apt update --yes
+RUN apt install --yes curl cmake mpich git
+
+WORKDIR /root
+
+RUN curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh && \
+    bash Miniforge3-Linux-x86_64.sh -b -p ~/miniforge && \
+    rm Miniforge3-Linux-x86_64.sh
+
+ENV PATH=/root/miniforge/bin:$PATH
+
+RUN echo $PATH
+RUN conda init --all 
+
+RUN conda update --all --yes && \
+    conda config --add channels https://conda.software.inl.gov/public && \
+    conda create -n moose moose
+
+FROM cardinal-conda-base AS cardinal-conda-deps
+
+RUN git clone https://github.com/neams-th-coe/cardinal.git
+
+WORKDIR /root/cardinal
+SHELL ["/bin/bash", "-i", "-c"]
+
+#RUN echo $PS1 >> ~/prompt
+RUN conda activate moose && \
+     ./scripts/get-dependencies.sh
+
+FROM cardinal-conda-deps AS cardinal
+
+RUN conda activate moose && \
+    export HDF5_ROOT=$CONDA_PREFIX && \
+    export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH && \
+    export ENABLE_NEK=false && \
+    make -j8

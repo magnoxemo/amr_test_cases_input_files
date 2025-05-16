@@ -68,10 +68,23 @@
 []
 
 [Adaptivity]
+    marker = error_fraction
+    steps = 2
   [Indicators]
     [error]
       type = ValueJumpIndicator
       variable = metric_var
+	  execute_on = 'TIMESTEP_BEGIN'
+    []
+  []
+
+  [Markers]
+    [error_fraction]
+      type = ErrorFractionMarker
+      indicator = error
+      refine = 0.3
+      coarsen = 0.2
+	  execute_on = 'TIMESTEP_BEGIN'
     []
   []
 []

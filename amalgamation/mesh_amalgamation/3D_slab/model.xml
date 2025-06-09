@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='utf-8'?>
+<model>
+  <materials>
+    <material depletable="true" id="1">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="1.0" name="U235"/>
+      <nuclide ao="1.0" name="U238"/>
+      <nuclide ao="1.0" name="O16"/>
+    </material>
+    <material depletable="true" id="2">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.9473684210526315" name="U235"/>
+      <nuclide ao="0.9473684210526315" name="U238"/>
+      <nuclide ao="0.9473684210526315" name="O16"/>
+    </material>
+    <material depletable="true" id="3">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.8947368421052632" name="U235"/>
+      <nuclide ao="0.8947368421052632" name="U238"/>
+      <nuclide ao="0.8947368421052632" name="O16"/>
+    </material>
+    <material depletable="true" id="4">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.8421052631578947" name="U235"/>
+      <nuclide ao="0.8421052631578947" name="U238"/>
+      <nuclide ao="0.8421052631578947" name="O16"/>
+    </material>
+    <material depletable="true" id="5">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.7894736842105263" name="U235"/>
+      <nuclide ao="0.7894736842105263" name="U238"/>
+      <nuclide ao="0.7894736842105263" name="O16"/>
+    </material>
+    <material depletable="true" id="6">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.7368421052631579" name="U235"/>
+      <nuclide ao="0.7368421052631579" name="U238"/>
+      <nuclide ao="0.7368421052631579" name="O16"/>
+    </material>
+    <material depletable="true" id="7">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.6842105263157894" name="U235"/>
+      <nuclide ao="0.6842105263157894" name="U238"/>
+      <nuclide ao="0.6842105263157894" name="O16"/>
+    </material>
+    <material depletable="true" id="8">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.631578947368421" name="U235"/>
+      <nuclide ao="0.631578947368421" name="U238"/>
+      <nuclide ao="0.631578947368421" name="O16"/>
+    </material>
+    <material depletable="true" id="9">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.5789473684210527" name="U235"/>
+      <nuclide ao="0.5789473684210527" name="U238"/>
+      <nuclide ao="0.5789473684210527" name="O16"/>
+    </material>
+    <material depletable="true" id="10">
+      <density units="g/cm3" value="10.4"/>
+      <nuclide ao="0.5263157894736842" name="U235"/>
+      <nuclide ao="0.5263157894736842" name="U238"/>
+      <nuclide ao="0.5263157894736842" name="O16"/>
+    </material>
+    <material id="11">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="12">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="13">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="14">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="15">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="16">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="17">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="18">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+    <material id="19">
+      <density units="g/cm3" value="1.7"/>
+      <nuclide ao="1.0" name="C12"/>
+    </material>
+  </materials>
+  <geometry>
+    <cell id="1" material="1" region="1 -2 3 -4 5 -6" universe="1"/>
+    <cell id="2" material="2" region="7 -8 9 -10 11 -12" universe="1"/>
+    <cell id="3" material="3" region="13 -14 15 -16 17 -18" universe="1"/>
+    <cell id="4" material="4" region="19 -20 21 -22 23 -24" universe="1"/>
+    <cell id="5" material="5" region="25 -26 27 -28 29 -30" universe="1"/>
+    <cell id="6" material="6" region="31 -32 33 -34 35 -36" universe="1"/>
+    <cell id="7" material="7" region="37 -38 39 -40 41 -42" universe="1"/>
+    <cell id="8" material="8" region="43 -44 45 -46 47 -48" universe="1"/>
+    <cell id="9" material="9" region="49 -50 51 -52 53 -54" universe="1"/>
+    <cell id="10" material="10" region="55 -56 57 -58 59 -60" universe="1"/>
+    <cell id="11" material="11" region="61 -62 63 -64 65 -66" universe="1"/>
+    <cell id="12" material="12" region="67 -68 69 -70 71 -72" universe="1"/>
+    <cell id="13" material="13" region="73 -74 75 -76 77 -78" universe="1"/>
+    <cell id="14" material="14" region="79 -80 81 -82 83 -84" universe="1"/>
+    <cell id="15" material="15" region="85 -86 87 -88 89 -90" universe="1"/>
+    <cell id="16" material="16" region="91 -92 93 -94 95 -96" universe="1"/>
+    <cell id="17" material="17" region="97 -98 99 -100 101 -102" universe="1"/>
+    <cell id="18" material="18" region="103 -104 105 -106 107 -108" universe="1"/>
+    <cell id="19" material="19" region="109 -110 111 -112 113 -114" universe="1"/>
+    <surface boundary="reflective" coeffs="0.0" id="1" type="x-plane"/>
+    <surface coeffs="5.2631578947368425" id="2" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="3" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="4" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="5" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="6" type="z-plane"/>
+    <surface coeffs="5.2631578947368425" id="7" type="x-plane"/>
+    <surface boundary="reflective" coeffs="10.526315789473685" id="8" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="9" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="10" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="11" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="12" type="z-plane"/>
+    <surface coeffs="10.526315789473685" id="13" type="x-plane"/>
+    <surface boundary="reflective" coeffs="15.789473684210527" id="14" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="15" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="16" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="17" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="18" type="z-plane"/>
+    <surface coeffs="15.789473684210527" id="19" type="x-plane"/>
+    <surface boundary="reflective" coeffs="21.05263157894737" id="20" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="21" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="22" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="23" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="24" type="z-plane"/>
+    <surface coeffs="21.05263157894737" id="25" type="x-plane"/>
+    <surface boundary="reflective" coeffs="26.315789473684212" id="26" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="27" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="28" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="29" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="30" type="z-plane"/>
+    <surface coeffs="26.315789473684212" id="31" type="x-plane"/>
+    <surface boundary="reflective" coeffs="31.578947368421055" id="32" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="33" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="34" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="35" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="36" type="z-plane"/>
+    <surface coeffs="31.578947368421055" id="37" type="x-plane"/>
+    <surface boundary="reflective" coeffs="36.8421052631579" id="38" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="39" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="40" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="41" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="42" type="z-plane"/>
+    <surface coeffs="36.8421052631579" id="43" type="x-plane"/>
+    <surface boundary="reflective" coeffs="42.10526315789474" id="44" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="45" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="46" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="47" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="48" type="z-plane"/>
+    <surface coeffs="42.10526315789474" id="49" type="x-plane"/>
+    <surface boundary="reflective" coeffs="47.36842105263158" id="50" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="51" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="52" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="53" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="54" type="z-plane"/>
+    <surface coeffs="47.36842105263158" id="55" type="x-plane"/>
+    <surface boundary="reflective" coeffs="52.631578947368425" id="56" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="57" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="58" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="59" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="60" type="z-plane"/>
+    <surface coeffs="52.631578947368425" id="61" type="x-plane"/>
+    <surface boundary="reflective" coeffs="57.89473684210527" id="62" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="63" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="64" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="65" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="66" type="z-plane"/>
+    <surface coeffs="57.89473684210527" id="67" type="x-plane"/>
+    <surface boundary="reflective" coeffs="63.15789473684211" id="68" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="69" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="70" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="71" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="72" type="z-plane"/>
+    <surface coeffs="63.15789473684211" id="73" type="x-plane"/>
+    <surface boundary="reflective" coeffs="68.42105263157896" id="74" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="75" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="76" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="77" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="78" type="z-plane"/>
+    <surface coeffs="68.42105263157896" id="79" type="x-plane"/>
+    <surface boundary="reflective" coeffs="73.6842105263158" id="80" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="81" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="82" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="83" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="84" type="z-plane"/>
+    <surface coeffs="73.6842105263158" id="85" type="x-plane"/>
+    <surface boundary="reflective" coeffs="78.94736842105263" id="86" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="87" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="88" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="89" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="90" type="z-plane"/>
+    <surface coeffs="78.94736842105263" id="91" type="x-plane"/>
+    <surface boundary="reflective" coeffs="84.21052631578948" id="92" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="93" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="94" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="95" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="96" type="z-plane"/>
+    <surface coeffs="84.21052631578948" id="97" type="x-plane"/>
+    <surface boundary="reflective" coeffs="89.47368421052633" id="98" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="99" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="100" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="101" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="102" type="z-plane"/>
+    <surface coeffs="89.47368421052633" id="103" type="x-plane"/>
+    <surface boundary="reflective" coeffs="94.73684210526316" id="104" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="105" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="106" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="107" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="108" type="z-plane"/>
+    <surface coeffs="94.73684210526316" id="109" type="x-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="110" type="x-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="111" type="y-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="112" type="y-plane"/>
+    <surface boundary="reflective" coeffs="0.0" id="113" type="z-plane"/>
+    <surface boundary="reflective" coeffs="100.0" id="114" type="z-plane"/>
+  </geometry>
+  <settings>
+    <run_mode>eigenvalue</run_mode>
+    <particles>1000</particles>
+    <batches>200</batches>
+    <inactive>50</inactive>
+    <source particle="neutron" strength="1.0" type="independent">
+      <space type="box">
+        <parameters>0.0 0.0 0.0 50.0 50.0 50.0</parameters>
+      </space>
+    </source>
+  </settings>
+  </model>

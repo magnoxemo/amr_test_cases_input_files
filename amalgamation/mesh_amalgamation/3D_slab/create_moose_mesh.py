@@ -1,6 +1,8 @@
 import os
 from ware_house.argument_parser import argument_parser
 
+to_meter = 0.01
+
 
 def create_mesh():
     args = argument_parser()
@@ -26,4 +28,5 @@ if __name__ == "__main__":
     create_mesh()
     os.system("cd ../3D_slab")
     os.system("/home/ebny_walid/Documents/github/cardinal/cardinal-opt -i mesh.i --mesh-only --n-threads=12")
+
 

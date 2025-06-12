@@ -61,4 +61,3 @@ if __name__ == "__main__":
     add_eeid_aux_variable_block(args)
     add_eeid_copier_aux_kernel_block(args)
 
-

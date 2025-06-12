@@ -1,0 +1,12 @@
+pitch = 1.26
+core_height = 192.78
+reflector_t = 21.42
+r_fuel = 0.4095
+t_f_c_gap = 0.0085
+t_clad = 0.057
+r_guide = 0.3400
+t_al_clad = 0.2
+NUM_SECTORS = 4
+FUEL_RADIAL_DIVISIONS = 1
+BACKGROUND_DIVISIONS = 1
+AXIAL_DIVISIONS = 4

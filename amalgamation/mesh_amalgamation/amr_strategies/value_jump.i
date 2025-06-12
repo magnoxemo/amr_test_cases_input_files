@@ -1,7 +1,7 @@
 
 num_cycles = 10
-r_error_fraction = 0.3
-r_stat_error = 1e-2
+r_error_fraction = 0.4
+r_stat_error = 0.1
 c_stat_error = 1e-1
 
 [Adaptivity]

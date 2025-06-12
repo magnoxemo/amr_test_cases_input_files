@@ -1,5 +1,3 @@
-
-
 [UserObjects]
     [clustering_1]
         type = ErrorFractionHeuristicUserObject

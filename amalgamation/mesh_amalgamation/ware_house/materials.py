@@ -23,9 +23,7 @@ def make_materials(material_dictionary: dict, percent_type: str, density=None):
         mat.set_density('g/cm3', density)
     else:
         mat.set_density('g/cm3', material_dictionary['density'])
-
     for element, percent in material_dictionary['composition'].items():
         mat.add_element(element, percent=percent, percent_type=percent_type)
 
     return mat
-

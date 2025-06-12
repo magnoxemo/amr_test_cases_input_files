@@ -1,16 +1,16 @@
 [Mesh]
-    [generated_mesh]
-        type = GeneratedMeshGenerator
-        dim = 3
-        nx = 30
-        ny = 30
-        nz = 30
-        xmin = -10
-        xmax = 30
-        ymin = -10
-        ymax = 10
-        zmin = -10
-        zmax = 10
-    []
+  [generated_mesh]
+     type = GeneratedMeshGenerator
+    nx = 10
+    ny = 2
+    nz = 2
+    xmin = -100.0
+    xmax = 300.0
+    ymin = 0.0
+    ymax = 100.0
+    zmin = 0.0
+    zmax = 100.0
+    dim = 3
+  []
 []
 

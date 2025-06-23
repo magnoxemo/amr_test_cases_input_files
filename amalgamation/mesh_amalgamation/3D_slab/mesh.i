@@ -4,12 +4,12 @@
     nx = 10
     ny = 2
     nz = 2
-    xmin = -100.0
-    xmax = 300.0
+    xmin = 0.0
+    xmax = 50.0
     ymin = 0.0
-    ymax = 100.0
+    ymax = 10.0
     zmin = 0.0
-    zmax = 100.0
+    zmax = 10.0
     dim = 3
   []
 []

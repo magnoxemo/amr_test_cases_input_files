@@ -4,7 +4,7 @@
   [Pin]
     type = PolygonConcentricCircleMeshGenerator
     num_sides = 4
-    num_sectors_per_side = '${NUM_SECTORS} ${NUM_SECTORS} ${NUM_SECTORS} ${NUM_SECTORS}'
+    num_sectors_per_side = '2 2 2 2'
     ring_radii = '${r_fuel}'
     ring_intervals = '${FUEL_RADIAL_DIVISIONS}'
     polygon_size = ${fparse pitch / 2.0}

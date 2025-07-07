@@ -1,22 +1,22 @@
 import openmc
-import numpy as np
-import os
-import common_input as pin_cell_param
-from ware_house.materials import material_dict, make_materials
-from ware_house.geomtery import make_box
-from ware_house.argument_parser import argument_parser
+import sys
+sys.path.append("../")
 
-os.environ["OPENMC_CROSS_SECTIONS"] = "/home/ebny_walid/endfb-viii.0-hdf5/cross_sections.xml"
+from argparse import ArgumentParser
+import openmc.material
+
+from ware_house.materials import make_sfr_material, material_dict
+import common_input as pincell_params
 
 
-def simulation_settings(shannon_entropy: bool):
-    fuel_radius = pin_cell_param.r_fuel
+def simulation_settings(shannon_entropy: bool, height: float):
+    fuel_radius = pincell_params.r_fuel
     lower_left = (-fuel_radius, -fuel_radius, 0.0)
-    upper_right = (fuel_radius, fuel_radius, pin_cell_param.core_height)
+    upper_right = (fuel_radius, fuel_radius, height)
 
     setting = openmc.Settings()
     setting.source = openmc.IndependentSource(
-        space=openmc.stats.Point((0, 0, pin_cell_param.core_height / 2)),
+        space=openmc.stats.Point((0, 0, pincell_params.height / 2)),
         angle=openmc.stats.Isotropic())
     setting.batches = 200
     setting.inactive = 40
@@ -37,48 +37,75 @@ def simulation_settings(shannon_entropy: bool):
     return setting
 
 
-def axially_varying_density(z, pincell_height):
-    return 1 + 10 * np.exp(-z / pincell_height)
-
-
-def main(arguments):
-    materials = []
-    cells = []
-
-    layers = np.linspace(0, pin_cell_param.core_height, pin_cell_param.AXIAL_DIVISIONS + 1)
-    z_planes = [openmc.ZPlane(z0=z) for z in layers]
-    z_planes[0].boundary_type = 'reflective'
-    z_planes[-1].boundary_type = 'reflective'
-
-    cyl = openmc.ZCylinder(r=pin_cell_param.r_fuel)
-
-    for i in range(1, pin_cell_param.AXIAL_DIVISIONS+1):
-        rho = axially_varying_density(layers[i], pin_cell_param.core_height)
-        fuel_material = make_materials(material_dict["UO2"], percent_type='ao', density=rho)
-        graphite_material = make_materials(material_dict['Graphite'], percent_type='ao', density=rho)
-
-        fuel_cell = openmc.Cell(region=-cyl & +z_planes[i - 1] & -z_planes[i], fill=fuel_material)
-        graphite_cell = openmc.Cell(region=+cyl & +z_planes[i - 1] & -z_planes[i], fill=graphite_material)
-
-        cells.extend([fuel_cell, graphite_cell])
-        materials.extend([fuel_material, graphite_material])
-
-    half_pitch = pin_cell_param.pitch / 2
-    bounding_cell = openmc.Cell(
-        region=make_box(x_dim=[-half_pitch, half_pitch],
-                        y_dim=[-half_pitch, half_pitch],
-                        z_dim=[0, pin_cell_param.core_height],
-                        boundary_conditions=["reflective"] * 6),
-        fill=openmc.Universe(cells=cells)
+def argument_parser():
+    ap = ArgumentParser(description="SFR Pincell Model Generator")
+    ap.add_argument(
+        "-n",
+        dest="n_axial",
+        type=int,
+        default=1,
+        help="Number of cells in the Z direction",
     )
-
-    model = openmc.Model(
-        geometry=openmc.Geometry(openmc.Universe(cells=[bounding_cell])),
-        materials=materials,
-        settings=simulation_settings(arguments)
+    ap.add_argument(
+        "-e",
+        "--shannon_entropy",
+        action="store_true",
+        help="Add Shannon entropy mesh"
     )
-    model.export_to_model_xml()
+    ap.add_argument("-p", dest="pincell_type", type=str, choices=["inner", "outer"],
+                    default="inner",
+                    help="Material composition of the pincell fuel material")
+
+    return ap.parse_args()
+
+
+def model_generate(arguments):
+    """
+    :return:
+    a pincell universe,
+    openmc.Materials class,
+    openmc.Geometry class,
+    openmc.Settings class
+
+    the universe class is mostly for reuse if we want to create an assembly
+    """
+    fuel_mat_name = f'{arguments.pincell_type}_fuel'
+    fuel_material = make_sfr_material(material_dict[fuel_mat_name], percent_type='wo')
+    cladding_material = make_sfr_material(material_dict['cladding'], percent_type='ao')
+    sodium = make_sfr_material(material_dict['sodium'], percent_type='ao')
+    helium = make_sfr_material(material_dict['helium'], percent_type='ao')
+
+    fuel_or = openmc.ZCylinder(r=pincell_params.r_fuel)
+    clad_ir = openmc.ZCylinder(r=pincell_params.r_clad_inner)
+    clad_or = openmc.ZCylinder(r=(pincell_params.r_clad_inner + pincell_params.t_clad))
+    fuel_bb = openmc.model.RectangularPrism(width=pincell_params.pitch,
+                                            height=pincell_params.height / arguments.n_axial,
+                                            boundary_type="reflective")
+    top = openmc.ZPlane(z0=pincell_params.height, boundary_type="reflective")
+    bottom = openmc.ZPlane(z0=0, boundary_type="vacuum")
+
+    cladding_cell = openmc.Cell(fill=cladding_material, region=+clad_ir & -clad_or)
+    gas_gap_cell = openmc.Cell(fill=helium, region=+fuel_or & -clad_ir)
+    fuel_cell = openmc.Cell(fill=fuel_material, region=-fuel_or)
+    sodium_cell = openmc.Cell(region=+clad_or & -fuel_bb & +bottom & - top, fill=sodium)
+    pincell_universe = openmc.Universe(cells=[cladding_cell, gas_gap_cell, fuel_cell])
+
+    pincell_lattice = openmc.RectLattice()
+    pincell_lattice.pitch = (
+        pincell_params.pitch, pincell_params.pitch,
+        pincell_params.height / arguments.n_axial)
+    pincell_lattice.lower_left = (
+        -pincell_params.pitch / 2.0, -pincell_params.pitch / 2.0, 0.0)
+    pincell_lattice.universes = [[[pincell_universe]] for i in range(arguments.n_axial)]
+
+    return openmc.Universe(
+        cells=[openmc.Cell(fill=pincell_lattice, region=-fuel_bb & +bottom & - top), sodium_cell]), openmc.Materials(
+        [fuel_material, sodium, helium, cladding_material]), openmc.Geometry(
+        [openmc.Cell(fill=pincell_lattice, region=-fuel_bb & +bottom & - top), sodium_cell]), simulation_settings(
+        arguments.shannon_entropy, height=pincell_params.height)
 
 
 if __name__ == "__main__":
-    main(argument_parser())
+    args = argument_parser()
+    _, mat, geometry, settings = model_generate(args)
+    openmc.model.Model(geometry, mat, settings).export_to_model_xml()

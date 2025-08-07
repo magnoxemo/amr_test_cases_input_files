@@ -1,6 +1,7 @@
 import numpy as np
 import openmc
 import os
+
 from ware_house.materials import material_dict, make_materials
 from ware_house.settings import simulation_settings
 from ware_house.argument_parser import argument_parser
@@ -16,7 +17,7 @@ def find_material_by_xp_pos(x, args):
 
 
 def density_by_x_pos(x, args):
-    return 10*np.exp(-abs(x / (args.x_max - args.x_min)))
+    return 10
 
 
 def make_model():
@@ -70,4 +71,4 @@ def make_model():
 
 
 if __name__ == "__main__":
-    make_model().run(geometry_debug=True)
+    make_model().export_to_model_xml()

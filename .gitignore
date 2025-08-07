@@ -1,0 +1,7 @@
+#ignore the mesh files
+*.e
+*.h5
+*.xml
+*.e-s*
+.idea
+

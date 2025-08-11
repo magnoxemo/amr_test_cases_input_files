@@ -1,4 +1,7 @@
 import os
+
+import sys
+sys.path.append("../")
 from ware_house.argument_parser import argument_parser
 
 to_meter = 0.01

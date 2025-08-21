@@ -1,7 +1,19 @@
 #ignore the mesh files
+openmc_out*
 *.e
 *.h5
 *.xml
 *.e-s*
 .idea
+*.csv
+*.out
 
+
+
+#python related things
+*.pkl
+*.pyc
+.vscode/
+.idea/
+.jitcache/
+__pyache__/

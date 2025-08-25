@@ -11,6 +11,7 @@
     zmin = 0.0
     zmax = 10.0
     dim = 3
+    extra_element_integers= "same_flux"
   []
 []
 

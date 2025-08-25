@@ -2,6 +2,8 @@ import numpy as np
 import openmc
 import os
 
+import sys
+sys.path.append("../")
 from ware_house.materials import material_dict, make_materials
 from ware_house.settings import simulation_settings
 from ware_house.argument_parser import argument_parser

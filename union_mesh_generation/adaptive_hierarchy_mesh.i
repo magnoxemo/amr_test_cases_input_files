@@ -90,7 +90,6 @@
 []
 
 
-
 [UserObjects]
     [ref_copier_1]
         type = SolutionUserObject

@@ -22,13 +22,13 @@ def density_by_x_pos(x, args):
 
 def make_model():
     args = argument_parser()
-    boundary_conditions_1 = ['reflective', 'transmission',  # x: left, right
+    boundary_conditions_1 = ['vacuum', 'transmission',  # x: left, right
                              'reflective', 'reflective',  # y
                              'reflective', 'reflective']
     boundary_conditions_2 = ['transmission', 'transmission',  # x: left, right
                              'reflective', 'reflective',  # y
                              'reflective', 'reflective']
-    boundary_conditions_3 = ['transmission', 'reflective',  # x: left, right
+    boundary_conditions_3 = ['transmission', 'vacuum',  # x: left, right
                              'reflective', 'reflective',  # y
                              'reflective', 'reflective']
     x_pos = np.linspace(args.x_min, args.x_max, args.Nx+1)

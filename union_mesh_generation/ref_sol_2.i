@@ -1,16 +1,13 @@
 [Mesh]
     [generate_mesh]
         type = GeneratedMeshGenerator
-        dim = 3
+        dim = 2
         xmin = 0
         xmax = 10
         ymin = 0
         ymax = 10
-        zmin = 0
-        zmax = 10
-        nx = 5
-        ny = 5
-        nz = 5 
+        nx = 2
+        ny = 2
     []
 []
 
@@ -43,7 +40,7 @@
     [fill_up_data]
         type = FunctionAux
         variable = in_mesh
-        function = "x*x+y*y"
+        function = "x*x/100+y*y"
         execute_on = 'TIMESTEP_BEGIN'
     []
 []
@@ -80,7 +77,7 @@
   type = Transient
   solve = false
   dt = 1
-  num_steps = 8
+  num_steps = 3
 []
 
 [Outputs]

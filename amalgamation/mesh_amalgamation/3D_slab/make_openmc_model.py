@@ -3,6 +3,7 @@ import openmc
 import os
 
 import sys
+
 sys.path.append("../")
 from ware_house.materials import material_dict, make_materials
 from ware_house.settings import simulation_settings
@@ -15,7 +16,7 @@ os.environ["OPENMC_CROSS_SECTIONS"] = "/home/ebny_walid/endfb-viii.0-hdf5/cross_
 def find_material_by_xp_pos(x, args):
     if x / abs(args.x_max - args.x_min) < args.fuel_percentage:
         return "fuel"
-    return "graphite"
+    return "Boron Carbide"
 
 
 def density_by_x_pos(x, args):
@@ -25,15 +26,15 @@ def density_by_x_pos(x, args):
 def make_model():
     args = argument_parser()
     boundary_conditions_1 = ['vacuum', 'transmission',  # x: left, right
-                             'reflective', 'reflective',  # y
+                             'reflective', 'vacuum',  # y
                              'reflective', 'reflective']
     boundary_conditions_2 = ['transmission', 'transmission',  # x: left, right
-                             'reflective', 'reflective',  # y
+                             'reflective', 'vacuum',  # y
                              'reflective', 'reflective']
     boundary_conditions_3 = ['transmission', 'vacuum',  # x: left, right
-                             'reflective', 'reflective',  # y
+                             'reflective', 'vacuum',  # y
                              'reflective', 'reflective']
-    x_pos = np.linspace(args.x_min, args.x_max, args.Nx+1)
+    x_pos = np.linspace(args.x_min, args.x_max, args.Nx + 1)
     cells = []
     materials = []
     for i in range(args.Nx):
@@ -42,7 +43,7 @@ def make_model():
             materials.append(
                 make_materials(material_dict['UO2'], percent_type='ao', density=density_by_x_pos(x_pos[i], args)))
         else:
-            materials.append(make_materials(material_dict['Graphite'], percent_type='ao'))
+            materials.append(make_materials(material_dict['Boron Carbide'], percent_type='ao'))
 
         if i == 0:
             box = make_box(x_dim=[x_pos[i], x_pos[i + 1]],

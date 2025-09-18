@@ -92,7 +92,15 @@ material_dict = {
             'Ar': 0.013,
             'C': 0.001
         }
+    },
+    'Boron Carbide': {
+        'density': 2.52,
+        'composition': {
+            'B': 0.8,
+            'C': 0.2
+        }
     }
+
 }
 
 

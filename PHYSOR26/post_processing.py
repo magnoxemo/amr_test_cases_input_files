@@ -164,43 +164,43 @@ def plot_clumulative_distribution_function(csv_file_name):
 
 if __name__ == "__main__":
 
-variable = "flux"
-data = []
-test_case_dirs = [
-    "ma_vd_0.1_err_0.5"
-    # "ma_vd_0.2_err_0.5",
-    # "ma_vd_0.3_err_0.5",
-    # "ma_vd_0.1_err_0.4",
-    # "ma_vd_0.2_err_0.4",
-    # "ma_vd_0.3_err_0.4",
-]
+    variable = "flux"
+    data = []
+    test_case_dirs = [
+        "ma_vd_0.1_err_0.5"
+        # "ma_vd_0.2_err_0.5",
+        # "ma_vd_0.3_err_0.5",
+        # "ma_vd_0.1_err_0.4",
+        # "ma_vd_0.2_err_0.4",
+        # "ma_vd_0.3_err_0.4",
+    ]
 
-adaptivity_step = ["10"]
+    adaptivity_step = ["10"]
 
 
-csv_file_names = [
-    "flux_discrepancy_data.csv",
-    "z_score_csv_data.csv",
-    "flux_rel_error_discrepancy_csv_data.csv",
-]
+    csv_file_names = [
+        "flux_discrepancy_data.csv",
+        "z_score_csv_data.csv",
+        "flux_rel_error_discrepancy_csv_data.csv",
+    ]
 
-plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
 
-for test_dir in test_case_dirs:
+    for test_dir in test_case_dirs:
 
-    for a_step in adaptivity_step:
+        for a_step in adaptivity_step:
 
-        simulate_time_step(
-            a_step, test_dir, variable="flux", csv_file_names=csv_file_names
-        )
-        print(f"setting = {test_dir} | time step = {a_step} done.")
+            simulate_time_step(
+                a_step, test_dir, variable="flux", csv_file_names=csv_file_names
+            )
+            print(f"setting = {test_dir} | time step = {a_step} done.")
 
-        # plotting stuff
-        plot_histogram_distribution("z_score_csv_data.csv")
-        #plot_histogram_distribution("flux_discrepancy_data.csv")
-        #plot_histogram_distribution("flux_rel_error_discrepancy_csv_data.csv")
-        
-        # plot_statistical_error_distribution("flux_discrepancy_data.csv")
-        plot_clumulative_distribution_function("z_score_csv_data.csv")
-        
+            # plotting stuff
+            plot_histogram_distribution("z_score_csv_data.csv")
+            #plot_histogram_distribution("flux_discrepancy_data.csv")
+            #plot_histogram_distribution("flux_rel_error_discrepancy_csv_data.csv")
+            
+            # plot_statistical_error_distribution("flux_discrepancy_data.csv")
+            plot_clumulative_distribution_function("z_score_csv_data.csv")
+            
          

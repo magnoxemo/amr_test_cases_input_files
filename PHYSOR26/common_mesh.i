@@ -1,3 +1,6 @@
+ref_mesh_soln_filename=gt.e-s011
+test_mesh_soln_filename=hex_same_flux_high_err_ma.e-s010
+
 [Mesh]
   [generated_mesh]
      type = GeneratedMeshGenerator
@@ -24,7 +27,7 @@
         order = CONSTANT
         family = MONOMIAL
     []
-    [same_flux_high_relative_error_ma]
+    [test_solution_hierarchy]
         order = CONSTANT
         family = MONOMIAL
     []
@@ -34,7 +37,7 @@
         family = MONOMIAL
     []
 
-    [high_relative_error_ma]
+    [ref_solution_hierarchy]
         order = CONSTANT
         family = MONOMIAL
     []
@@ -47,23 +50,23 @@
     variable=adaptive_hierarchy
   []
 
-  [cp_sln_mesh_1]
+  [cp_ref_sln_mesh_hierarchy]
     type= SolutionAux
-    solution = amr_solution_user_object
-    variable = high_relative_error_ma
+    solution = ref_solution_hierarchy_user_object
+    variable = ref_solution_hierarchy
   []
 
-  [cp_sln_mesh_2]
+  [cp_test_sln_mesh_hierarchy]
     type= SolutionAux
-    solution = mesh_amalgamation_user_object
-    variable = same_flux_high_relative_error_ma
+    solution = test_solution_hierarchy_user_object
+    variable = test_solution_hierarchy
   []
 
   [calculate_max_hierarchy_refinement_step]
     type = ParsedAux
     variable = max_elemental_hierachy
-    coupled_variables = 'same_flux_high_relative_error_ma high_relative_error_ma'
-    expression = 'max(same_flux_high_relative_error_ma, high_relative_error_ma)'
+    coupled_variables = 'test_solution_hierarchy ref_solution_hierarchy'
+    expression = 'max(test_solution_hierarchy, ref_solution_hierarchy)'
   []
 
   [calculate_refinement_step]
@@ -80,6 +83,8 @@
 
   [Markers]
     [marker]
+      # for an element  We should be
+      # refining untill the element_refinement_step is zero
       type = ValueThresholdMarker
       coarsen = -2
       refine = 0.7
@@ -91,16 +96,16 @@
 
 
 [UserObjects]
-    [amr_solution_user_object]
+    [ref_solution_hierarchy_user_object]
         type = SolutionUserObject
-        mesh = gt.e-s011
+        mesh = $ref_mesh_soln_filename
         system_variables = hierarchy
         timestep = 1
     [] 
 
-    [mesh_amalgamation_user_object]
+   [test_solution_hierarchy_user_object]
         type = SolutionUserObject
-        mesh = hex_same_flux_high_err_ma.e-s010
+        mesh = $test_mesh_soln_filename
         system_variables = hierarchy
         timestep = 1
     []

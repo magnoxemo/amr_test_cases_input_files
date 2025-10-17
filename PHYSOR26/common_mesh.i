@@ -1,5 +1,5 @@
-ref_mesh_soln_filename=gt.e-s011
-test_mesh_soln_filename=hex_same_flux_high_err_ma.e-s010
+ref_mesh_file_name=gt.e-s011
+test_mesh_file_name=hex_same_flux_high_err_ma.e-s010
 
 [Mesh]
   [generated_mesh]
@@ -36,7 +36,6 @@ test_mesh_soln_filename=hex_same_flux_high_err_ma.e-s010
         order = CONSTANT
         family = MONOMIAL
     []
-
     [ref_solution_hierarchy]
         order = CONSTANT
         family = MONOMIAL
@@ -94,18 +93,17 @@ test_mesh_soln_filename=hex_same_flux_high_err_ma.e-s010
   []
 []
 
-
 [UserObjects]
     [ref_solution_hierarchy_user_object]
         type = SolutionUserObject
-        mesh = $ref_mesh_soln_filename
+        mesh = ${ref_mesh_file_name}
         system_variables = hierarchy
         timestep = 1
     [] 
 
    [test_solution_hierarchy_user_object]
         type = SolutionUserObject
-        mesh = $test_mesh_soln_filename
+        mesh = ${test_mesh_file_name}
         system_variables = hierarchy
         timestep = 1
     []

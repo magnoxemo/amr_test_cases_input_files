@@ -1,7 +1,13 @@
+union_mesh_file_name = common_mesh_out.e-s004
+ref_mesh_file_name = openmc_out.e
+test_mesh_file_name = openmc_out.e
+variable = flux
+variable_rel_error = flux_rel_error
+
 [Mesh]
     [file_mesh_generator]
         type = FileMeshGenerator
-        file = common_mesh_out.e-s004
+        file = $union_mesh_file_name
         use_for_exodus_restart = true
     []
 []
@@ -19,113 +25,124 @@
         order = CONSTANT
         family = MONOMIAL
     []
-    [amr_flux_tally]
+    [ref_flux_mean]
         order = CONSTANT
         family = MONOMIAL
     []
-    [ma_flux_tally]
+    [test_flux_mean]
         order = CONSTANT
         family = MONOMIAL
     []
-    [amr_flux_tally_statistical_error]
+    [ref_flux_rel_stat_error]
         order = CONSTANT
         family = MONOMIAL
     []
-    [ma_flux_tally_statistical_error]
+    [test_flux_rel_stat_error]
         order = CONSTANT
         family = MONOMIAL
     []
 []
 
+[UserObjects]
+    [ref_sln_mean_user_obj]
+        type = SolutionUserObject
+        mesh = ${ref_mesh_file_name}
+        system_variables = ${variable}
+        timestep = 1
+    [] 
+    [test_sln_mean_user_obj]
+        type = SolutionUserObject
+        mesh = ${test_mesh_file_name}
+        system_variables = ${variable}
+        timestep = 1
+    []
+    [ref_sln_stat_error_user_obj]
+        type = SolutionUserObject
+        mesh = ${ref_mesh_file_name}
+        system_variables = ${variable_rel_error}
+        timestep = 1
+    []
+    [test_sln_stat_error_user_obj]
+        type = SolutionUserObject
+        mesh = ${test_mesh_file_name}
+        system_variables = ${variable_rel_error}
+        timestep = 1
+    []  
+[]
+
+
 [AuxKernels]
-  [cp_sln_mesh_1]
+  [load_ref_sln_mean]
     type= SolutionAux
-    solution = amr_solution_user_object
-    variable = amr_flux_tally
+    solution = ref_sln_mean_user_obj
+    variable = ref_flux_mean
   []
-  [cp_sln_mesh_2]
+  [load_ref_sln_stat_error]
     type= SolutionAux
-    solution = amr_user_object_statistical_error
-    variable = amr_flux_tally_statistical_error
+    solution = ref_sln_stat_error_user_obj
+    variable = ref_flux_rel_stat_error
   []
-  [cp_sln_mesh_3]
+  [load_test_sln_mean]
     type= SolutionAux
-    solution = mesh_amalgamation_user_object_statistical_error
-    variable = ma_flux_tally_statistical_error
+    solution = test_sln_mean_user_obj
+    variable = test_flux_mean
   []
-  [cp_sln_mesh_5]
+  [load_test_sln_stat_error]
     type= SolutionAux
-    solution = mesh_amalgamation_user_object
-    variable = ma_flux_tally
+    solution = test_sln_stat_error_user_obj
+    variable = test_flux_rel_stat_error
   []
-  
-  
-  #actual calculation part
+
   [flux_relative_discrepancy_calculation]
+
     type = ParsedAux
     variable = flux_relative_discrepancy    
-    coupled_variables = 'ma_flux_tally amr_flux_tally'
-    expression = '( amr_flux_tally - ma_flux_tally )/ amr_flux_tally'
+    coupled_variables = 'test_flux_mean ref_flux_mean'
+    expression = '( ref_flux_mean - test_flux_mean )/ ref_flux_mean'
+
   []
   
   [flux_error_discrepancy_calculation]
     type = ParsedAux
     variable = flux_rel_error_discrepancy
-    coupled_variables = 'amr_flux_tally_statistical_error ma_flux_tally_statistical_error'
-    expression = '( ma_flux_tally_statistical_error - amr_flux_tally_statistical_error )/ amr_flux_tally_statistical_error'
+    coupled_variables = 'ref_flux_rel_stat_error test_flux_rel_stat_error'
+    expression = '( test_flux_rel_stat_error - ref_flux_rel_stat_error )/ ref_flux_rel_stat_error'
   [] 
   
   [z_score_calculation]
     type = ParsedAux
     variable = z_score
-    coupled_variables = 'amr_flux_tally_statistical_error flux_relative_discrepancy'
-    expression = 'flux_relative_discrepancy / amr_flux_tally_statistical_error '
+    coupled_variables = 'ref_flux_rel_stat_error flux_relative_discrepancy'
+    expression = 'flux_relative_discrepancy / ref_flux_rel_stat_error '
   []
   
 []
 
 [UserObjects]
-    [amr_solution_user_object]
-        type = SolutionUserObject
-        mesh = gt_truth.e
-        system_variables = flux
-        timestep = 1
-    [] 
-    [mesh_amalgamation_user_object]
-        type = SolutionUserObject
-        mesh = ma_test.e
-        system_variables = flux
-        timestep = 1
-    []
-    [amr_user_object_statistical_error]
-        type = SolutionUserObject
-        mesh = gt_truth.e
-        system_variables = flux_rel_error
-        timestep = 1
-    []
-    [mesh_amalgamation_user_object_statistical_error]
-        type = SolutionUserObject
-        mesh = ma_test.e
-        system_variables = flux_rel_error
-        timestep = 1
-    [] 
-    #csv data
-    [csv_data]
+    [test_flux_mean_csv]
     	type = ElementCentroidCSV
-    	metric_variable_name = "flux_relative_discrepancy"
-	csv_file_name = "flux_relative_discrepancy_data.csv"
+    	metric_variable_name = test_flux_mean
+    	csv_file_name = "test_flux_mean.csv"
     []
-    [z_score_csv_data]
+    [ref_flux_mean_csv]
     	type = ElementCentroidCSV
-    	metric_variable_name = "z_score"
-    	csv_file_name = "z_score_csv_data.csv"
+    	metric_variable_name = ref_flux_mean
+    	csv_file_name = "ref_flux_mean.csv"
     []
-    [flux_rel_error_discrepancy_csv_data]
+    [test_flux_rel_stat_error_csv]
     	type = ElementCentroidCSV
-    	metric_variable_name = "flux_rel_error_discrepancy"
-    	csv_file_name = "flux_rel_error_discrepancy_csv_data.csv"
+    	metric_variable_name = test_flux_rel_stat_error
+    	csv_file_name = "test_flux_rel_stat_error.csv"
     []
+    [ref_flux_rel_stat_error_csv]
+    	type = ElementCentroidCSV
+    	metric_variable_name = ref_flux_rel_stat_error
+    	csv_file_name = "ref_flux_rel_stat_error.csv"
+    []
+    
 []
+
+
 
 [Problem]
   type = FEProblem

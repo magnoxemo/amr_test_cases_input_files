@@ -43,6 +43,7 @@ class post_processing_with_two_brain_cell:
         self.test_mesh = os.path.join(self.test_dir_path, exodus_file_name)
         
         self.ref_test_mesh_arguments= [f"test_mesh_file_name={self.test_mesh}", f"ref_mesh_file_name={self.ref_mesh}"]
+        print (f"compairing betweem {self.ref_mesh} and {self.test_mesh}", )
         try:
             subprocess.run(
                 [self.executable, "-i", self.union_mesh_script, *self.ref_test_mesh_arguments, "--n-threads=28"],
@@ -71,13 +72,14 @@ class post_processing_with_two_brain_cell:
         if max(union_mesh_time_steps) !=1:
             self.union_mesh = prefix + f"{max(union_mesh_time_steps)}"
         else: 
-            self.union_mesh = prefix[:-2]
+            self.union_mesh = prefix[:-4]
 
     def project_solution_to_union_mesh(self):
 
         #first get the test dir name 
         #necessary for csv file naming 
         test_dir_name = self.test_dir_path.split("/")[-2]
+        
         csv_file_names = []
 
         for case in ["test", "ref"]:
@@ -85,6 +87,7 @@ class post_processing_with_two_brain_cell:
                 #need to delete that existing file otherwise my UO will just append data to it
                 csv_file = f"{test_dir_name}_{case}_flux_{tally}.csv"
                 if os.path.exists(csv_file):
+                    print(f"removing existing csv file : {csv_file}")
                     os.remove(csv_file)
                     
                 csv_file_names.append(f"UserObjects/{case}_flux_{tally}_csv/csv_file_name={csv_file}")
@@ -98,9 +101,9 @@ class post_processing_with_two_brain_cell:
                             *csv_file_names,
                             *self.ref_test_mesh_arguments,
                             f"union_mesh_file_name={self.union_mesh}",
-                            f"variable={self.variable}",
-                            f"variable_rel_error={self.variable}_rel_error"]
-            print(final_command)
+                            f"tally_variable={self.variable}",
+                            f"tally_rel_error_variable={self.variable}_rel_error"]
+
             subprocess.run(final_command,
                             cwd=os.getcwd(),
                             capture_output=True,
@@ -110,12 +113,10 @@ class post_processing_with_two_brain_cell:
         except subprocess.CalledProcessError as e:
             print("STDERR:", e.stderr)
 
-    def read_data_frame(csv_file_name):
+    def read_data_frame(self,csv_file_name):
 
         abs_path = os.path.join(os.getcwd(), csv_file_name)
         return pd.read_csv(abs_path) 
-
-
+    
 if __name__ =="__main__":
-
     pass

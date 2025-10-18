@@ -1,13 +1,15 @@
 union_mesh_file_name = common_mesh_out.e-s004
 ref_mesh_file_name = openmc_out.e
 test_mesh_file_name = openmc_out.e
-variable = flux
-variable_rel_error = flux_rel_error
+
+variables="flux flux_rel_error"
+tally_variable="flux"
+tally_rel_error_variable="flux_rel_error"
 
 [Mesh]
     [file_mesh_generator]
         type = FileMeshGenerator
-        file = $union_mesh_file_name
+        file = ${union_mesh_file_name}
         use_for_exodus_restart = true
     []
 []
@@ -43,54 +45,30 @@ variable_rel_error = flux_rel_error
     []
 []
 
-[UserObjects]
-    [ref_sln_mean_user_obj]
-        type = SolutionUserObject
-        mesh = ${ref_mesh_file_name}
-        system_variables = ${variable}
-        timestep = 1
-    [] 
-    [test_sln_mean_user_obj]
-        type = SolutionUserObject
-        mesh = ${test_mesh_file_name}
-        system_variables = ${variable}
-        timestep = 1
-    []
-    [ref_sln_stat_error_user_obj]
-        type = SolutionUserObject
-        mesh = ${ref_mesh_file_name}
-        system_variables = ${variable_rel_error}
-        timestep = 1
-    []
-    [test_sln_stat_error_user_obj]
-        type = SolutionUserObject
-        mesh = ${test_mesh_file_name}
-        system_variables = ${variable_rel_error}
-        timestep = 1
-    []  
-[]
-
-
 [AuxKernels]
   [load_ref_sln_mean]
     type= SolutionAux
-    solution = ref_sln_mean_user_obj
+    solution = ref_sln_user_obj
     variable = ref_flux_mean
+    from_variable =${tally_variable}
   []
   [load_ref_sln_stat_error]
     type= SolutionAux
-    solution = ref_sln_stat_error_user_obj
+    solution = ref_sln_user_obj
     variable = ref_flux_rel_stat_error
+    from_variable = ${tally_rel_error_variable}
   []
   [load_test_sln_mean]
     type= SolutionAux
-    solution = test_sln_mean_user_obj
+    solution = test_sln_user_obj
     variable = test_flux_mean
+    from_variable = ${tally_variable}
   []
   [load_test_sln_stat_error]
     type= SolutionAux
-    solution = test_sln_stat_error_user_obj
+    solution = test_sln_user_obj
     variable = test_flux_rel_stat_error
+    from_variable = ${tally_rel_error_variable}
   []
 
   [flux_relative_discrepancy_calculation]
@@ -119,6 +97,19 @@ variable_rel_error = flux_rel_error
 []
 
 [UserObjects]
+
+    [ref_sln_user_obj]
+        type = SolutionUserObject
+        mesh = ${ref_mesh_file_name}
+        system_variables = ${variables}
+    [] 
+    [test_sln_user_obj]
+        type = SolutionUserObject
+        mesh = ${test_mesh_file_name}
+        system_variables =  ${variables}
+    []
+
+    #csv files sections 
     [test_flux_mean_csv]
     	type = ElementCentroidCSV
     	metric_variable_name = test_flux_mean

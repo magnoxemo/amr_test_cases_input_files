@@ -15,23 +15,7 @@ tally_rel_error_variable="flux_rel_error"
 []
 
 [AuxVariables]
-    [flux_relative_discrepancy]
-        order = CONSTANT
-        family = MONOMIAL
-    []
-    [flux_rel_error_discrepancy]
-        order = CONSTANT
-        family = MONOMIAL
-    []
-    [z_score]
-        order = CONSTANT
-        family = MONOMIAL
-    []
     [ref_flux_mean]
-        order = CONSTANT
-        family = MONOMIAL
-    []
-    [test_flux_mean]
         order = CONSTANT
         family = MONOMIAL
     []
@@ -39,7 +23,23 @@ tally_rel_error_variable="flux_rel_error"
         order = CONSTANT
         family = MONOMIAL
     []
+    [test_flux_mean]
+        order = CONSTANT
+        family = MONOMIAL
+    []
     [test_flux_rel_stat_error]
+        order = CONSTANT
+        family = MONOMIAL
+    []
+    [flux_rel_discrepancy_mean]
+        order = CONSTANT
+        family = MONOMIAL
+    []
+    [flux_rel_discrepancy_stat_error]
+        order = CONSTANT
+        family = MONOMIAL
+    []
+    [z_score]
         order = CONSTANT
         family = MONOMIAL
     []
@@ -74,7 +74,7 @@ tally_rel_error_variable="flux_rel_error"
   [flux_relative_discrepancy_calculation]
 
     type = ParsedAux
-    variable = flux_relative_discrepancy    
+    variable = flux_rel_discrepancy_mean
     coupled_variables = 'test_flux_mean ref_flux_mean'
     expression = '( ref_flux_mean - test_flux_mean )/ ref_flux_mean'
 
@@ -82,7 +82,7 @@ tally_rel_error_variable="flux_rel_error"
   
   [flux_error_discrepancy_calculation]
     type = ParsedAux
-    variable = flux_rel_error_discrepancy
+    variable = flux_rel_discrepancy_stat_error
     coupled_variables = 'ref_flux_rel_stat_error test_flux_rel_stat_error'
     expression = '( test_flux_rel_stat_error - ref_flux_rel_stat_error )/ ref_flux_rel_stat_error'
   [] 
@@ -90,8 +90,8 @@ tally_rel_error_variable="flux_rel_error"
   [z_score_calculation]
     type = ParsedAux
     variable = z_score
-    coupled_variables = 'ref_flux_rel_stat_error flux_relative_discrepancy'
-    expression = 'flux_relative_discrepancy / ref_flux_rel_stat_error '
+    coupled_variables = 'ref_flux_rel_stat_error flux_rel_discrepancy_mean'
+    expression = 'flux_rel_discrepancy_mean / ref_flux_rel_stat_error '
   []
   
 []

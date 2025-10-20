@@ -19,6 +19,18 @@ test_mesh_file_name=hex_same_flux_high_err_ma.e-s010
 
 
 [AuxVariables]
+    [ref_solution_hierarchy]
+        order = CONSTANT
+        family = MONOMIAL
+    []
+    [test_solution_hierarchy]
+        order = CONSTANT
+        family = MONOMIAL
+    []
+    [max_elemental_hierarchy]
+        order = CONSTANT
+        family = MONOMIAL
+    []
     [adaptive_hierarchy]
         order = CONSTANT
         family = MONOMIAL
@@ -27,52 +39,34 @@ test_mesh_file_name=hex_same_flux_high_err_ma.e-s010
         order = CONSTANT
         family = MONOMIAL
     []
-    [test_solution_hierarchy]
-        order = CONSTANT
-        family = MONOMIAL
-    []
-
-    [max_elemental_hierachy]
-        order = CONSTANT
-        family = MONOMIAL
-    []
-    [ref_solution_hierarchy]
-        order = CONSTANT
-        family = MONOMIAL
-    []
 []
 
 [AuxKernels]
-
-  [adaptive_hierarchy_aux]
-    type=ElementHierarchyAux
-    variable=adaptive_hierarchy
-  []
-
-  [cp_ref_sln_mesh_hierarchy]
+  [load_ref_sln_hierarchy]
     type= SolutionAux
     solution = ref_solution_hierarchy_user_object
     variable = ref_solution_hierarchy
   []
-
-  [cp_test_sln_mesh_hierarchy]
+  [load_test_sln_hierarchy]
     type= SolutionAux
     solution = test_solution_hierarchy_user_object
     variable = test_solution_hierarchy
   []
-
-  [calculate_max_hierarchy_refinement_step]
+  [calc_max_element_hierarchy]
     type = ParsedAux
-    variable = max_elemental_hierachy
+    variable = max_elemental_hierarchy
     coupled_variables = 'test_solution_hierarchy ref_solution_hierarchy'
     expression = 'max(test_solution_hierarchy, ref_solution_hierarchy)'
   []
-
-  [calculate_refinement_step]
+  [adaptive_hierarchy_aux]
+    type=ElementHierarchyAux
+    variable=adaptive_hierarchy
+  []
+  [calc_remaining_refinement_steps]
     type = ParsedAux
     variable = element_refinement_step
-    coupled_variables = 'adaptive_hierarchy max_elemental_hierachy'
-    expression = 'abs(max_elemental_hierachy - adaptive_hierarchy)'
+    coupled_variables = 'adaptive_hierarchy max_elemental_hierarchy'
+    expression = 'abs(max_elemental_hierarchy - adaptive_hierarchy)'
   []
 []
 

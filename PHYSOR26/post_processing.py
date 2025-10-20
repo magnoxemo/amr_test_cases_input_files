@@ -1,4 +1,3 @@
-import os
 import subprocess
 import pandas as pd
 from pathlib import Path
@@ -13,19 +12,15 @@ A simple script that creates
 
 class post_processing_with_two_brain_cell:
 
-    def __init__(self,
-                 ref_dir_path: str,
-                 test_dir_path: str,
-                 variable: str):
-
+    def __init__(self, ref_dir_path: str, test_dir_path: str, variable: str):
         """
-        ref_dir_path: relative path of the ref dir solution 
+        ref_dir_path: relative path of the ref dir solution
         test_dir_path: relative path of the test dir solution
-        variables_to_export: list of the variables to export in csv files 
+        variables_to_export: list of the variables to export in csv files
         """
 
-        self.ref_dir_path = Path(Path.cwd(), ref_dir_path)
-        self.test_dir_path = Path(Path.cwd(), test_dir_path)
+        self.ref_dir_path = Path.cwd() / ref_dir_path
+        self.test_dir_path = Path.cwd() / test_dir_path
         self.variable = variable
 
         self.union_mesh_script = "common_mesh.i"
@@ -39,32 +34,44 @@ class post_processing_with_two_brain_cell:
         if time_step != 1:
             exodus_file_name = f"openmc_out.e-s{time_step:03d}"
 
-        self.ref_mesh = os.path.join(self.ref_dir_path, exodus_file_name)
-        self.test_mesh = os.path.join(self.test_dir_path, exodus_file_name)
+        self.ref_mesh = self.ref_dir_path / exodus_file_name
+        self.test_mesh = self.test_dir_path / exodus_file_name
 
-        self.ref_test_mesh_arguments = [f"test_mesh_file_name={self.test_mesh}", f"ref_mesh_file_name={self.ref_mesh}"]
-        print(f"compairing betweem {self.ref_mesh} and {self.test_mesh}", )
+        self.ref_test_mesh_arguments = [
+            f"test_mesh_file_name={self.test_mesh}",
+            f"ref_mesh_file_name={self.ref_mesh}",
+        ]
+        print(
+            f"comparing between {self.ref_mesh} and {self.test_mesh}",
+        )
         try:
             subprocess.run(
-                [self.executable, "-i", self.union_mesh_script, *self.ref_test_mesh_arguments, "--n-threads=28"],
-                cwd=os.getcwd(),
+                [
+                    self.executable,
+                    "-i",
+                    self.union_mesh_script,
+                    *self.ref_test_mesh_arguments,
+                    "--n-threads=28",
+                ],
+                cwd=Path.cwd(),
                 capture_output=True,
                 text=True,
                 check=True,
             )
 
-            print(" ========== Union mesh generation is completed successfully! ==========")
+            print(
+                " ========== Union mesh generation is completed successfully! =========="
+            )
             self.set_updated_union_mesh()
 
         except subprocess.CalledProcessError as e:
             print("STDERR:", e.stderr)
 
     def set_updated_union_mesh(self):
-
         """
         now that the union mesh is generated I need to set it.
         """
-        prefix = self.union_mesh_script[:-2]+"_out."
+        prefix = self.union_mesh_script[:-2] + "_out."
         self.union_mesh = (sorted(list(Path.cwd().glob(f"{prefix}*"))))[-1]
 
     def project_solution_to_union_mesh(self):
@@ -80,31 +87,38 @@ class post_processing_with_two_brain_cell:
                 # need to delete that existing file otherwise my UO will just append data to it
                 csv_file = Path(Path.cwd(), "{test_dir_name}_{case}_flux_{tally}.csv")
                 Path.unlink(csv_file, missing_ok=True)
-                csv_file_names.append(f"UserObjects/{case}_flux_{tally}_csv/csv_file_name={csv_file}")
+                csv_file_names.append(
+                    f"UserObjects/{case}_flux_{tally}_csv/csv_file_name={csv_file}"
+                )
                 # I may need to get rid of that flux variable later. But for now we are only using flux values
 
         try:
-            final_command = [self.executable, "-i",
-                             "error_calculator.i",
-                             "--n-threads=28",
-                             *csv_file_names,
-                             *self.ref_test_mesh_arguments,
-                             f"union_mesh_file_name={self.union_mesh}",
-                             f"tally_variable={self.variable}",
-                             f"tally_rel_error_variable={self.variable}_rel_error"]
+            final_command = [
+                self.executable,
+                "-i",
+                "error_calculator.i",
+                "--n-threads=28",
+                *csv_file_names,
+                *self.ref_test_mesh_arguments,
+                f"union_mesh_file_name={self.union_mesh}",
+                f"tally_variable={self.variable}",
+                f"tally_rel_error_variable={self.variable}_rel_error",
+            ]
 
-            subprocess.run(final_command,
-                           cwd=os.getcwd(),
-                           capture_output=True,
-                           text=True,
-                           check=True)
+            subprocess.run(
+                final_command,
+                cwd=Path.cwd(),
+                capture_output=True,
+                text=True,
+                check=True,
+            )
 
         except subprocess.CalledProcessError as e:
             print("STDERR:", e.stderr)
 
     def read_data_frame(self, csv_file_name):
 
-        abs_path = os.path.join(os.getcwd(), csv_file_name)
+        abs_path = Path.cwd() / csv_file_name
         return pd.read_csv(abs_path)
 
 

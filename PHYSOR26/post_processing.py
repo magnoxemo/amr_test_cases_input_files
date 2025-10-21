@@ -10,7 +10,7 @@ A simple script that creates
 """
 
 
-class post_processing_with_two_brain_cell:
+class MeshAmalgamationPostProcessor:
 
     def __init__(self, ref_dir_path: str, test_dir_path: str, variable: str):
         """
@@ -32,7 +32,7 @@ class post_processing_with_two_brain_cell:
     def generate_union_mesh(self, time_step):
         exodus_file_name = "openmc_out.e"
         if time_step != 1:
-            exodus_file_name = f"openmc_out.e-s{time_step:03d}"
+            exodus_file_name = f"openmc_out.e-s{time_step: .3d}"
 
         self.ref_mesh = self.ref_dir_path / exodus_file_name
         self.test_mesh = self.test_dir_path / exodus_file_name
@@ -53,7 +53,6 @@ class post_processing_with_two_brain_cell:
                     *self.ref_test_mesh_arguments,
                     "--n-threads=28",
                 ],
-                cwd=Path.cwd(),
                 capture_output=True,
                 text=True,
                 check=True,
@@ -90,7 +89,6 @@ class post_processing_with_two_brain_cell:
 
             subprocess.run(
                 final_command,
-                cwd=Path.cwd(),
                 capture_output=True,
                 text=True,
                 check=True,

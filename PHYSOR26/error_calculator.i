@@ -31,11 +31,11 @@ variables="${tally_variable} ${tally_rel_error_variable}"
         order = CONSTANT
         family = MONOMIAL
     []
-    [flux_rel_discrepancy_mean]
+    [rel_discrepancy_mean]
         order = CONSTANT
         family = MONOMIAL
     []
-    [flux_rel_discrepancy_stat_error]
+    [rel_discrepancy_stat_error]
         order = CONSTANT
         family = MONOMIAL
     []
@@ -74,7 +74,7 @@ variables="${tally_variable} ${tally_rel_error_variable}"
   [tally_relative_discrepancy_calculation]
 
     type = ParsedAux
-    variable = flux_rel_discrepancy_mean
+    variable = rel_discrepancy_mean
     coupled_variables = 'test_mean ref_mean'
     expression = '( ref_mean - test_mean )/ ref_mean'
 
@@ -82,7 +82,7 @@ variables="${tally_variable} ${tally_rel_error_variable}"
   
   [tally_error_discrepancy_calculation]
     type = ParsedAux
-    variable = flux_rel_discrepancy_stat_error
+    variable = rel_discrepancy_stat_error
     coupled_variables = 'ref_rel_stat_error test_rel_stat_error'
     expression = '( test_rel_stat_error - ref_rel_stat_error )/ ref_rel_stat_error'
   [] 
@@ -90,8 +90,8 @@ variables="${tally_variable} ${tally_rel_error_variable}"
   [z_score_calculation]
     type = ParsedAux
     variable = z_score
-    coupled_variables = 'ref_rel_stat_error flux_rel_discrepancy_mean'
-    expression = 'flux_rel_discrepancy_mean / ref_rel_stat_error '
+    coupled_variables = 'ref_rel_stat_error rel_discrepancy_mean'
+    expression = 'rel_discrepancy_mean / ref_rel_stat_error '
   []
   
 []

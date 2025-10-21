@@ -105,9 +105,9 @@ class MeshAmalgamationPostProcessor:
 
         If time_step is not given by default it will open the latest time step.
         """
-        csv_file_name_prefix = "error_calculator_csv_data_extractor_out_"
+        csv_file_name_prefix = "error_calculator_out_csv_data_extractor_"
         if time_step is not None:
-            csv_file_name = csv_file_name_prefix + f"{time_step: 3d}.e"
+            csv_file_name = csv_file_name_prefix + f"{time_step: 03d}.e"
         else:
             csv_file_name = sorted(list(Path.cwd().glob(f"{csv_file_name_prefix}*")))[-1]
         abs_path = Path.cwd() / csv_file_name

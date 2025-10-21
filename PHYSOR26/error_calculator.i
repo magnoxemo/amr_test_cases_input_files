@@ -1,5 +1,3 @@
-!include data_extractor.i
-
 union_mesh_file_name = common_mesh_out.e-s004
 ref_mesh_file_name = openmc_out.e
 test_mesh_file_name = openmc_out.e
@@ -111,7 +109,14 @@ variables="${tally_variable} ${tally_rel_error_variable}"
     []
 []
 
-
+[VectorPostprocessors]
+  [csv_data_extractor]
+    type = ElementValueSampler
+    sort_by = "x"
+    variable = "test_mean ref_mean test_rel_stat_error ref_rel_stat_error z_score"
+    execute_on = 'initial timestep_end'
+  []
+[]
 
 [Problem]
   type = FEProblem
@@ -125,4 +130,5 @@ variables="${tally_variable} ${tally_rel_error_variable}"
 
 [Outputs]
   exodus = true
+  csv = true
 []

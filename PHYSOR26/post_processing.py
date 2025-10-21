@@ -76,29 +76,12 @@ class post_processing_with_two_brain_cell:
 
     def project_solution_to_union_mesh(self):
 
-        # first get the test dir name
-        # necessary for csv file naming
-        test_dir_name = self.test_dir_path.name
-
-        csv_file_names = []
-
-        for case in ["test", "ref"]:
-            for tally in ["mean", "rel_stat_error"]:
-                # need to delete that existing file otherwise my UO will just append data to it
-                csv_file = Path(Path.cwd(), "{test_dir_name}_{case}_flux_{tally}.csv")
-                Path.unlink(csv_file, missing_ok=True)
-                csv_file_names.append(
-                    f"UserObjects/{case}_flux_{tally}_csv/csv_file_name={csv_file}"
-                )
-                # I may need to get rid of that flux variable later. But for now we are only using flux values
-
         try:
             final_command = [
                 self.executable,
                 "-i",
                 "error_calculator.i",
                 "--n-threads=28",
-                *csv_file_names,
                 *self.ref_test_mesh_arguments,
                 f"union_mesh_file_name={self.union_mesh}",
                 f"tally_variable={self.variable}",
@@ -116,8 +99,18 @@ class post_processing_with_two_brain_cell:
         except subprocess.CalledProcessError as e:
             print("STDERR:", e.stderr)
 
-    def read_data_frame(self, csv_file_name):
+    def read_latest_data_frame(self, time_step: None):
+        """
+        reads the dataframe with the latest time step. moose outputs the csv data
+        as {input_file_name}_{ElementValueSampler_name}_out_{three_digit_time_step}.e
+        In our case we are only interested about the 001 th time step.
 
+        If time_step is not given by default it will open the latest time step.
+        """
+        csv_file_name_prefix = "error_calculator_csv_data_extractor_out_"
+        csv_file_name = sorted(list(Path.cwd().glob(f"{csv_file_name_prefix}*")))[-1]
+        if time_step is not None:
+            csv_file_name = csv_file_name_prefix + f"{time_step: .3d}.e"
         abs_path = Path.cwd() / csv_file_name
         return pd.read_csv(abs_path)
 

@@ -32,7 +32,7 @@ class MeshAmalgamationPostProcessor:
     def generate_union_mesh(self, time_step):
         exodus_file_name = "openmc_out.e"
         if time_step != 1:
-            exodus_file_name = f"openmc_out.e-s{time_step: .3d}"
+            exodus_file_name += f"-s{time_step: 03d}"
 
         self.ref_mesh = self.ref_dir_path / exodus_file_name
         self.test_mesh = self.test_dir_path / exodus_file_name
@@ -106,9 +106,10 @@ class MeshAmalgamationPostProcessor:
         If time_step is not given by default it will open the latest time step.
         """
         csv_file_name_prefix = "error_calculator_csv_data_extractor_out_"
-        csv_file_name = sorted(list(Path.cwd().glob(f"{csv_file_name_prefix}*")))[-1]
         if time_step is not None:
-            csv_file_name = csv_file_name_prefix + f"{time_step: .3d}.e"
+            csv_file_name = csv_file_name_prefix + f"{time_step: 3d}.e"
+        else:
+            csv_file_name = sorted(list(Path.cwd().glob(f"{csv_file_name_prefix}*")))[-1]
         abs_path = Path.cwd() / csv_file_name
         return pd.read_csv(abs_path)
 

@@ -17,3 +17,5 @@ openmc_out*
 .idea/
 .jitcache/
 __pyache__/
+
+*.pdf

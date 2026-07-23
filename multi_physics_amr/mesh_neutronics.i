@@ -1,4 +1,4 @@
-!include ../common.i
+!include common.i
 
 h_bottom = ${fparse active_height * n_bottom / number_of_axial_layer_neutronics}
 h_middle = ${fparse active_height * n_middle / number_of_axial_layer_neutronics}

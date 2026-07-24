@@ -3,7 +3,7 @@
 #  |-- solid.i  
 #       |-- sub_channel.i 
 # ==========================================================
-!include ../common.i
+!include common.i
 
 [
 

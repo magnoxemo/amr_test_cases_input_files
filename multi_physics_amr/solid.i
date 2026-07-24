@@ -1,4 +1,4 @@
-!include ../common.i
+!include common.i
 
 [Mesh]
   [load]
@@ -104,9 +104,6 @@
     prop_values = '22   350   6500' 
   []
 []
-
-
-
 
 
 [Executioner]

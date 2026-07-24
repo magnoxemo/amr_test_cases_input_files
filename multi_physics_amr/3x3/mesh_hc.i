@@ -1,4 +1,4 @@
-!include ../../../../mesh_hc.i
+!include ../mesh_hc.i
 
 [Mesh]
   [assembly]

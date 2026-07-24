@@ -4,10 +4,16 @@
 #       |-- sub_channel.i 
 # ==========================================================
 
-!include ../scm_pparams.i
+!include ../../openmc.i
+
+
+# ========================= specific to this model ==========================
+total_pins_in_this_model=9
+
+assembly_th_power  = 20
 
 [Mesh]
-  [load]
+  [file_mesh]
     type = FileMeshGenerator
     file = ../mesh_neutronics_in.e
   []
@@ -16,5 +22,16 @@
 
 
 [Problem]
-  power = ${fparse power}
+  power := ${fparse assembly_th_power}
+  xml_directory=../model.xml
+[]
+
+
+[MultiApps]
+  [solid]
+    input_files := solid.i
+  []
+  [sub_channel]
+    input_files := sub_channel.i
+  []
 []

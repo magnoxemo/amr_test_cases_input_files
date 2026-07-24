@@ -2,21 +2,29 @@
 # openmc.i 
 #  |-- solid.i  
 #       |-- sub_channel.i 
-# ==========================================================
-!include common.i
+# =========================================================
 
-[
+
+[AuxVariables]
+  [q_prime]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel_bottom fuel_middle fuel_top'
+  []
+[]
+
+
 
 [Problem]
   type = OpenMCCellAverageProblem
   power = ${fparse assembly_th_power}
   verbose = true
 
-  temperature_blocks  = 'fuel_top fuel_middle fuel_bottom clad water'
-  temperature_variables     = temp
+  temperature_blocks  = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top water'
+  temperature_variables = temp
   density_blocks= 'water'
-  density_variables   = density
-  cell_level    = 1
+  density_variables = density
+  cell_level = 1
   initial_properties  = xml
   source_rate_normalization = kappa_fission
   relaxation    = robbins_monro
@@ -66,7 +74,7 @@
     from_multi_app = solid
     source_variable = T
     variable = temp
-    to_blocks = 'fuel_top fuel_middle fuel_bottom clad water'
+    to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top water'
   []
   [T_fluid_from_solid]
     type = MultiAppGeneralFieldNearestLocationTransfer
@@ -91,6 +99,21 @@
     source_variable = T_wall_send
     variable = Tpin                # was T_wall — SCM expects Tpin
     execute_on = 'initial timestep_end'
+  []
+
+
+  [q_prime_from_solid]
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    from_multi_app = solid
+    source_variable = q_prime_send
+    variable = q_prime
+  []
+
+  [q_prime_to_scm]
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    to_multi_app = sub_channel
+    source_variable = q_prime
+    variable = q_prime
   []
 
   [T_fluid_from_subchannel]

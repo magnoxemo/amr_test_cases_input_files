@@ -1,13 +1,3 @@
-!include common.i
-
-[Mesh]
-  [load]
-    type = FileMeshGenerator
-    file = mesh_hc_in.e
-  []
-  length_unit = 'm'
-[]
-
 [Variables]
   [T]
     initial_condition = 600.0
@@ -15,24 +5,50 @@
 []
 
 [AuxVariables]
-  [heat_source]                    # W/m^3
+  [heat_source]
     family = MONOMIAL
     order = CONSTANT
     block = 'fuel'
   []
-  [T_fluid]                        # from THM, K
-    initial_condition = ${inlet_temperature}
+  [T_fluid]
+    initial_condition = ${coolant_inlet_temperature}
   []
-  [heat_transfer_co_efficient]     # from THM, W/m^2-K
+  [heat_transfer_co_efficient]
     initial_condition = 30000.0
   []
-  [T_wall_send]                    # to THM, K
+  [T_wall_send]
     family = MONOMIAL
     order = CONSTANT
     initial_condition = 600.0
-    boundary = 'clad_outer'  
+    boundary = 'clad_outer'
+  []
+  [q_prime_send]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  []
+  [rho_from_scm]
+    initial_condition = 700.0
   []
 []
+
+[AuxKernels]
+  [sample_wall_T]
+    type = SpatialUserObjectAux
+    variable = T_wall_send
+    user_object = layered_clad_T
+    boundary = 'clad_outer'
+  []
+  [compute_q_prime]
+    type = ParsedAux
+    variable = q_prime_send
+    coupled_variables = 'heat_source'
+    expression = 'heat_source * ${fparse pi * fuel_outer_radius * fuel_outer_radius}'
+    block = 'fuel'
+    execute_on = 'initial timestep_end'
+  []
+[]
+
 
 [Kernels]
   [conduction]
@@ -47,20 +63,11 @@
   [source]
     type = CoupledForce
     variable = T
-    v = heat_source
+    v = heat_source # this is my q''' for sub channel as well
     block = 'fuel'
   []
 []
 
-[AuxKernels]
-  [sample_wall_T]
-    type = SpatialUserObjectAux
-    variable = T_wall_send
-    user_object = layered_clad_T
-    boundary = 'clad_outer'
-  []
-
-[]
 
 [UserObjects]
   [layered_clad_T]
@@ -68,8 +75,18 @@
     variable = T
     boundary = 'clad_outer'
     direction = z
-    num_layers = ${n_axial_layers}
+    num_layers = ${num_heat_axial_layers}
     points = '0 0 0'
+    execute_on = 'initial timestep_end'
+  []
+
+  [layered_q_prime]
+    type = NearestPointLayeredIntegral
+    variable = heat_source
+    direction = z
+    num_layers = ${num_heat_axial_layers}
+    points = '0 0 0'
+    block = 'fuel'
     execute_on = 'initial timestep_end'
   []
 []
@@ -113,7 +130,7 @@
   l_max_its = 50
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
-  dtmin = 0.001
+  dtmin = 0.05
 
   [TimeStepper]
     type = IterationAdaptiveDT

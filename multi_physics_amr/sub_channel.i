@@ -1,61 +1,107 @@
-!include common.i
-
 # Subchannel operating conditions
-mass_flux_in = 25000                       # kg/s-m^2 this is magic number. I need to calculate what should be the flow rate
-T_in_scm     = ${inlet_temperature}        # from common.i
-P_out_scm    = ${pressure_outlet}          # from common.i
-
-[QuadSubChannelMesh]
-  [sub_channel]
-    type = SCMQuadAssemblyMeshGenerator
-    nx = 4   # place_holder
-    ny = 4   # place_holder
-    n_cells = ${n_axial_layers}
-    pitch = ${pitch}
-    pin_diameter = ${fparse clad_or * 2}
-    side_gap = ${fparse pitch / 2 - clad_or}
-    heated_length = ${active_height}
-  []
-[]
+T_in_scm     = ${coolant_inlet_temperature}        # from common.i
+P_out_scm    = ${coolant_outlet_pressure}          # from common.i
 
 [FluidProperties]
   [water]
     type = Water97FluidProperties
-    T_initial_guess = ${inlet_temperature}
-    p_initial_guess = ${pressure_outlet}
+    T_initial_guess = ${T_in_scm}
+    p_initial_guess = ${P_out_scm}
   []
 []
+
+
+
+[QuadSubChannelMesh]
+  [subchannel]
+    type = SCMQuadAssemblyMeshGenerator
+    nx = 4   # place_holder
+    ny = 4   # place_holder
+    n_cells = ${num_heat_axial_layers}
+    pitch = ${pin_pitch}
+    pin_diameter = ${fparse cladding_outer_radius * 2}
+    side_gap = ${fparse side_gap}
+    heated_length = ${active_core_height}
+  []
+[]
+
+
+[AuxVariables]
+  [mdot]
+    block = subchannel
+  []
+  [SumWij]
+    block = subchannel
+  []
+  [P]
+    block = subchannel
+  []
+  [DP]
+    block = subchannel
+  []
+  [h]
+    block = subchannel
+  []
+  [T]
+    block = subchannel
+  []
+  [Tpin]
+    block = fuel_pins
+  []
+  [rho]
+    block = subchannel
+  []
+  [mu]
+    block = subchannel
+  []
+  [S]
+    block = subchannel
+  []
+  [w_perim]
+    block = subchannel
+  []
+  [q_prime]
+    block = fuel_pins
+  []
+  [Dpin]
+    block = fuel_pins
+  []
+[]
+
 
 [SubChannel]
   type = QuadSubChannel1PhaseProblem
   fp = water
-  n_blocks = ${n_axial_layers}
-  P_tol = 1e-6
-  T_tol = 1e-6
-  full_output = true
+  n_blocks = ${num_heat_axial_layers}
   compute_density = true
   compute_viscosity = true
   compute_power = true
   P_out = ${P_out_scm}
+  implicit = false
+  verbose_subchannel = true
+  interpolation_scheme = exponential
   friction_closure = 'MATRA'
   mixing_closure = 'constant_beta'
   pin_HTC_closure = 'Dittus-Boelter'
+  full_output = true
 []
 
 [SCMClosures]
   [MATRA]
     type = SCMFrictionMATRA
   []
-  # controls the cross flow 
-  [constant_beta]
-    type = SCMMixingConstantBeta
-    beta = 0.006
-    CT = 2.0
-  []
   [Dittus-Boelter]
     type = SCMHTCDittusBoelter
+    correction_factor = none
+  []
+  [constant_beta]
+    type = SCMMixingConstantBeta
+    beta = 0.08
+    CT = 2.6
   []
 []
+
+
 
 [ICs]
   [T_ic]
@@ -64,10 +110,9 @@ P_out_scm    = ${pressure_outlet}          # from common.i
     value = ${T_in_scm}
   []
   [q_prime_IC]
-    type = SCMQuadPowerIC
+    type = ConstantIC
     variable = q_prime
-    power = ${fparse assembly_th_power}
-    filename = 'power_profile.txt'    # normalized axial shape
+    value = 0.0
   []
   [P_ic]
     type = ConstantIC
@@ -77,7 +122,7 @@ P_out_scm    = ${pressure_outlet}          # from common.i
   [Dpin_ic]
     type = ConstantIC
     variable = Dpin
-    value = ${fparse clad_or * 2}
+    value = ${fparse cladding_outer_radius * 2}
   []
   [Viscosity_ic]
     type = ViscosityIC
@@ -120,11 +165,10 @@ P_out_scm    = ${pressure_outlet}          # from common.i
     variable = mdot
     boundary = inlet
     area = S
-    mass_flux = ${mass_flux_in}
+    mass_flux = ${mass_flux}
     execute_on = 'timestep_begin'
   []
 []
-
 
 [MultiApps]
   [viz]
@@ -159,5 +203,6 @@ P_out_scm    = ${pressure_outlet}          # from common.i
 []
 
 [Outputs]
+  
   exodus = true
 []

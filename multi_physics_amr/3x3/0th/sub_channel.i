@@ -1,15 +1,20 @@
-!include ../../../sub_channel.i
+
+
+!include ../../common.i
+!include ../../sub_channel.i 
+
+assembly_th_power= ${fparse 9 * power_per_fuel_pin}
 
 [QuadSubChannelMesh]
-  [sub_channel]
-    nx := 4   
-    ny := 4  
+  [subchannel]
+    nx := 4  
+    ny :=4
   []
 []
 
 [ICs]
   [q_prime_IC]
-    filename := '../power_profile.txt'    
+    power := ${assembly_th_power}
+    filename := '../power_profile.txt'   
   []
-
 []

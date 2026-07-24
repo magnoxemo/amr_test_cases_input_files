@@ -5,11 +5,11 @@
     type = SCMDetailedQuadAssemblyMeshGenerator
     nx = 3
     ny = 3
-    n_cells = ${n_axial_layers}
-    pitch = ${pitch}
-    pin_diameter = ${fparse clad_or * 2}
-    side_gap = ${fparse pitch / 2 - clad_or}
-    heated_length = ${active_height}
+    n_cells = ${num_heat_axial_layers}
+    pitch = ${pin_pitch}
+    pin_diameter = ${fparse cladding_outer_radius * 2}
+    side_gap = ${fparse pin_pitch / 2 - cladding_outer_radius}
+    heated_length = ${active_core_height}
   []
 []
 

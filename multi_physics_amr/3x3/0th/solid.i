@@ -1,4 +1,7 @@
-!include ../scm_pparams.i
+
+!include ../../common.i
+!include ../../solid.i
+
 
 [Mesh]
   [load]
@@ -7,3 +10,12 @@
   []
   length_unit = 'm'
 []
+
+
+
+[UserObjects]
+  [layered_clad_T]
+    num_layers := ${num_heat_axial_layers}
+  []
+[]
+

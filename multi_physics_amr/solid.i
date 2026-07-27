@@ -112,7 +112,7 @@
     type = GenericConstantMaterial
     block = 'gap'
     prop_names  = 'thermal_conductivity specific_heat density'
-    prop_values = '0.15  5000 0.197'    
+    prop_values = '0.15  5000 3.5'    
   []
   [clad_k]
     type = GenericConstantMaterial

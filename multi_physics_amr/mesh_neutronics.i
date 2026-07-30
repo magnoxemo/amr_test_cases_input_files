@@ -5,6 +5,10 @@
     num_sectors_per_side := '2 2 2 2'
     ring_intervals := '1 1 1'
   []
+  [guide_tube]
+    num_sectors_per_side := '2 2 2 2'
+    ring_intervals := '2 1'
+  []
   [extrude]
     heights := '${fparse active_core_height * num_bottom_layers / num_neutronics_axial_layers} ${fparse active_core_height * num_middle_layers / num_neutronics_axial_layers} ${fparse active_core_height * num_top_layers / num_neutronics_axial_layers}'
 

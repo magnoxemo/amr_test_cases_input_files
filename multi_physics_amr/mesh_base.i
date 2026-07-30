@@ -14,6 +14,23 @@
     preserve_volumes = true
     flat_side_up = true
   []
+
+  [guide_tube]
+    type = PolygonConcentricCircleMeshGenerator
+    num_sides = 4
+    num_sectors_per_side = '4 4 4 4'
+    ring_radii = '${guide_tube_inner_radius} ${guide_tube_outer_radius}'
+    ring_intervals = '6 1'
+    polygon_size = ${fparse pin_pitch / 2.0}
+    ring_block_ids = '10 11 12'
+    ring_block_names = 'guide_center guide al_clad'
+    background_block_ids = '4'
+    background_block_names = 'water'
+    flat_side_up = true
+    preserve_volumes = false
+
+    create_outward_interface_boundaries = false
+  []
   [assembly]
     type = PatternedCartesianMeshGenerator
     inputs = 'fuel_pin'

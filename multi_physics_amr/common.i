@@ -9,8 +9,8 @@ pin_pitch                 = 1.25984e-2                     # m
 fuel_outer_radius         = 0.39218e-2            # m
 cladding_inner_radius     = 0.40005e-2        # m
 cladding_outer_radius     = 0.45720e-2        # m
-guide_tube_inner_radius   = 0.56134e-2      # m
-guide_tube_outer_radius   = 0.60198e-2      # m
+guide_tube_inner_radius   = 0.3400e-2     # m
+guide_tube_outer_radius   = 0.54e-2      # m
 
 burnable_absorber_outer_radius = 0.56134e-2   # m
 

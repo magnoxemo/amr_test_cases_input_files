@@ -14,8 +14,8 @@
 
 
 [UserObjects]
-  [layered_clad_T]
-    num_layers := ${num_heat_axial_layers}
+  [q_prime_uo]
+    points_file := '../pincenters.txt'
   []
 []
 

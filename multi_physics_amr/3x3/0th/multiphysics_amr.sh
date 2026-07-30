@@ -5,9 +5,9 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=0
 #SBATCH --time=0-23:00:00
-#SBATCH --job-name=convergence_study
-#SBATCH --error=convergence_study.%J.err
-#SBATCH --output=convergence_study.%J.out
+#SBATCH --job-name=0th_r
+#SBATCH --error=0th_r.%J.err
+#SBATCH --output=0th_r.%J.out
 
 module load openmpi
 export UCX_POSIX_USE_PROC_LINK=n

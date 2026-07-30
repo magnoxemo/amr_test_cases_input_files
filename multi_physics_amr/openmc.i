@@ -50,9 +50,9 @@
   source_rate_normalization = kappa_fission
   relaxation    = robbins_monro
   scaling = 100
-  particles = 40000
-  inactive_batches = 50
-  batches = 150
+  particles = 50000
+  inactive_batches = 200
+  batches = 1000
 
 
   [Tallies]
@@ -69,7 +69,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 100
+  num_steps = 50
 []
 
 

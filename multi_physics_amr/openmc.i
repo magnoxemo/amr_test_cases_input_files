@@ -1,18 +1,39 @@
-# ==========================================================
-# openmc.i 
-#  |-- solid.i  
-#       |-- sub_channel.i 
-# =========================================================
 
-
-[AuxVariables]
-  [q_prime]
-    family = MONOMIAL
-    order = CONSTANT
-    block = 'fuel_bottom fuel_middle fuel_top'
+[ICs]
+  [temp]
+    type = ConstantIC
+    variable = temp
+    value = ${coolant_inlet_temperature}
+  []
+  [density]
+    type = ConstantIC
+    variable = density
+    value = ${fparse 1.00423e3 + -0.21390*coolant_inlet_temperature+-1.1046e-5*coolant_inlet_temperature^2}
   []
 []
 
+
+[AuxVariables]
+  [cell_temperature]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [cell_density]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[AuxKernels]
+  [cell_temperature]
+    type = CellTemperatureAux
+    variable = cell_temperature
+  []
+  [cell_density]
+    type = CellDensityAux
+    variable = cell_density
+  []
+[]
 
 
 [Problem]
@@ -30,8 +51,8 @@
   relaxation    = robbins_monro
   scaling = 100
   particles = 40000
-  inactive_batches = 5
-  batches = 15
+  inactive_batches = 50
+  batches = 150
 
 
   [Tallies]
@@ -46,101 +67,93 @@
 []
 
 
+[Executioner]
+  type = Transient
+  num_steps = 100
+[]
+
+
+# ============================== MultiApps =================================
 
 [MultiApps]
   [solid]
     type = TransientMultiApp
     input_files = solid.i
-    execute_on  = 'initial timestep_end'
+    execute_on  = 'timestep_end'
     sub_cycling = true
   []
   [sub_channel]
-    type = TransientMultiApp
+    type = FullSolveMultiApp
     input_files = sub_channel.i
-    execute_on = 'initial timestep_end'
-    sub_cycling = true
+    execute_on = 'timestep_begin'
+    max_procs_per_app = 1
   []
 []
 
 [Transfers]
- [heat_source_to_solid]
+  [heat_source_to_solid]
     type = MultiAppGeneralFieldNearestLocationTransfer
     to_multi_app = solid
     source_variable = heat_source
     variable = heat_source
+    from_postprocessors_to_be_preserved = openmc_power_integral
+    to_postprocessors_to_be_preserved   = conduction_power_integral
   []
-  [T_from_solid]
+  [solid_temperature_from_conduction]
     type = MultiAppGeneralFieldNearestLocationTransfer
     from_multi_app = solid
     source_variable = T
     variable = temp
     to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top water'
   []
-  [T_fluid_from_solid]
-    type = MultiAppGeneralFieldNearestLocationTransfer
-    from_multi_app = sub_channel
-    source_variable = T
-    variable = temp
-    to_blocks = 'water'
-  []
 
-  [rho_fluid_from_subchannel]
-    type = MultiAppGeneralFieldNearestLocationTransfer
-    from_multi_app = sub_channel
-    source_variable = rho
-    variable = density
-    execute_on = 'initial timestep_end'
-  []
-
-  [T_wall_to_sub_channel]
+  [linear_heat_rate_to_subchannel]
     type = MultiAppGeneralFieldNearestLocationTransfer
     to_multi_app = sub_channel
     from_multi_app = solid
-    source_variable = T_wall_send
-    variable = Tpin                # was T_wall — SCM expects Tpin
-    execute_on = 'initial timestep_end'
-  []
-
-
-  [q_prime_from_solid]
-    type = MultiAppGeneralFieldNearestLocationTransfer
-    from_multi_app = solid
-    source_variable = q_prime_send
-    variable = q_prime
-  []
-
-  [q_prime_to_scm]
-    type = MultiAppGeneralFieldNearestLocationTransfer
-    to_multi_app = sub_channel
     source_variable = q_prime
     variable = q_prime
+    greedy_search = true
+    use_bounding_boxes = false
+    to_blocks = 'fuel_pins'
   []
 
-  [T_fluid_from_subchannel]
+
+  [fluid_temperature_from_subchannel]
     type = MultiAppGeneralFieldNearestLocationTransfer
-    from_multi_app = sub_channel
-    to_multi_app = solid
     source_variable = T
-    variable = T_fluid
-    execute_on = 'initial timestep_end'
+    variable = temp
+    from_multi_app = sub_channel
+    greedy_search = true
+    use_bounding_boxes = false
+    to_blocks = 'water'
+    from_blocks = 'subchannel'
   []
-
-  [htc_from_sub_channel]
+  [fluid_density_from_subchannel]
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    source_variable = rho
+    variable = density
+    from_multi_app = sub_channel
+    greedy_search = true
+    use_bounding_boxes = false
+    to_blocks = 'water'
+    from_blocks = 'subchannel'
+  []
+  [clad_surface_temperature_to_conduction]
     type = MultiAppGeneralFieldNearestLocationTransfer
     from_multi_app = sub_channel
     to_multi_app = solid
-    source_variable = HTC
-    variable = heat_transfer_co_efficient
-    execute_on = 'initial timestep_end'
+    source_variable = Tpin
+    variable = T_wall
   []
 []
 
 [Postprocessors]
-  [heat_source_pp]
+  [openmc_power_integral]
     type = ElementIntegralVariablePostprocessor
     variable = heat_source
-    block = 'fuel_top fuel_middle fuel_bottom'
-  []
+    execute_on = 'transfer timestep_end'
+  [] 
   [k]
     type = KEigenvalue
     value_type = 'combined'
@@ -151,25 +164,48 @@
     value_type = 'combined'
     output = 'std_dev'
   []
-  [k_rel_err]
-    type = KEigenvalue
-    value_type = 'combined'
-    output = 'rel_err'
+  [max_coolant_T]
+    type = ElementExtremeValue
+    variable = temp
+    block = 'water'
+    value_type = max
   []
+  [avg_coolant_T]
+    type = ElementAverageValue
+    variable = temp
+    block = 'water'
+  []
+  [min_coolant_T]
+    type = ElementExtremeValue
+    variable = temp
+    block = 'water'
+    value_type = min
+  []
+  [max_coolant_rho]
+    type = ElementExtremeValue
+    variable = density
+    block = 'water'
+    value_type = max
+  []
+  [avg_coolant_rho]
+    type = ElementAverageValue
+    variable = density
+    block = 'water'
+  []
+  [min_coolant_rho]
+    type = ElementExtremeValue
+    variable = density
+    block = 'water'
+    value_type = min
+  []
+
+  
 []
 
 
-[Executioner]
-  type = Transient
-  dt = 0.1
-  num_steps = 20 # 20 iterations gives essentially steady-state convergence with steady_state_tolerance=0.001 on the heat_source AuxVar
-[]
+
 
 [Outputs]
   exodus = true
   csv = true
-  [console]
-    type = Console
-    execute_postprocessors_on = 'timestep_end'
-  []
 []

@@ -2,14 +2,17 @@
 T_in_scm     = ${coolant_inlet_temperature}        # from common.i
 P_out_scm    = ${coolant_outlet_pressure}          # from common.i
 
-[FluidProperties]
-  [water]
-    type = Water97FluidProperties
-    T_initial_guess = ${T_in_scm}
-    p_initial_guess = ${P_out_scm}
+
+
+
+[AuxVariables]
+  [q_prime]
+    block = fuel_pins
+  []
+  [Tpin]
+    block = fuel_pins
   []
 []
-
 
 
 [QuadSubChannelMesh]
@@ -26,85 +29,8 @@ P_out_scm    = ${coolant_outlet_pressure}          # from common.i
 []
 
 
-[AuxVariables]
-  [mdot]
-    block = subchannel
-  []
-  [SumWij]
-    block = subchannel
-  []
-  [P]
-    block = subchannel
-  []
-  [DP]
-    block = subchannel
-  []
-  [h]
-    block = subchannel
-  []
-  [T]
-    block = subchannel
-  []
-  [Tpin]
-    block = fuel_pins
-  []
-  [rho]
-    block = subchannel
-  []
-  [mu]
-    block = subchannel
-  []
-  [S]
-    block = subchannel
-  []
-  [w_perim]
-    block = subchannel
-  []
-  [q_prime]
-    block = fuel_pins
-  []
-  [Dpin]
-    block = fuel_pins
-  []
-[]
-
-
-[SubChannel]
-  type = QuadSubChannel1PhaseProblem
-  fp = water
-  n_blocks = ${num_heat_axial_layers}
-  compute_density = true
-  compute_viscosity = true
-  compute_power = true
-  P_out = ${P_out_scm}
-  implicit = false
-  verbose_subchannel = true
-  interpolation_scheme = exponential
-  friction_closure = 'MATRA'
-  mixing_closure = 'constant_beta'
-  pin_HTC_closure = 'Dittus-Boelter'
-  full_output = true
-[]
-
-[SCMClosures]
-  [MATRA]
-    type = SCMFrictionMATRA
-  []
-  [Dittus-Boelter]
-    type = SCMHTCDittusBoelter
-    correction_factor = none
-  []
-  [constant_beta]
-    type = SCMMixingConstantBeta
-    beta = 0.08
-    CT = 2.6
-  []
-[]
-
-
-
 [ICs]
-  [T_ic]
+  [T_IC]
     type = ConstantIC
     variable = T
     value = ${T_in_scm}
@@ -145,12 +71,51 @@ P_out_scm    = ${coolant_outlet_pressure}          # from common.i
     T = T
     fp = water
   []
-  [mdot_ic]
-    type = ConstantIC
-    variable = mdot
-    value = 0.0
+[]
+
+
+[FluidProperties]
+  [water]
+    type = Water97FluidProperties
+    T_initial_guess = ${T_in_scm}
+    p_initial_guess = ${P_out_scm}
   []
 []
+
+
+[SubChannel]
+  type = QuadSubChannel1PhaseProblem
+  fp = water
+  n_blocks = 1
+  implicit = true
+  compute_density = true
+  compute_viscosity = true
+  compute_power = true
+  P_out = ${P_out_scm}
+  P_tol = 1.0e-5
+  T_tol = 1.0e-5
+  verbose_subchannel = true
+  friction_closure = 'MATRA'
+  mixing_closure = 'constant_beta'
+  pin_HTC_closure = 'Dittus-Boelter'
+  full_output = true
+[]
+
+[SCMClosures]
+  [MATRA]
+    type = SCMFrictionMATRA
+  []
+  [Dittus-Boelter]
+    type = SCMHTCDittusBoelter
+    correction_factor = none
+  []
+  [constant_beta]
+    type = SCMMixingConstantBeta
+    beta = 0.006
+    CT = 2.6
+  []
+[]
+
 
 [AuxKernels]
   [T_in_bc]
@@ -174,7 +139,7 @@ P_out_scm    = ${coolant_outlet_pressure}          # from common.i
   [viz]
     type = FullSolveMultiApp
     input_files = subchannel_viz.i
-    execute_on = 'final'
+    execute_on = 'timestep_end'
   []
 []
 
@@ -182,27 +147,24 @@ P_out_scm    = ${coolant_outlet_pressure}          # from common.i
   [T_to_viz]
     type = SCMSolutionTransfer
     to_multi_app = viz
-    variable = 'T mdot h rho mu P Dpin q_prime'
+    variable = 'T mdot h rho mu P'
+  []
+
+  [pin_transfer]
+    type = SCMPinSolutionTransfer
+    to_multi_app = viz
+    variable = 'q_prime'
   []
 []
 
 [Executioner]
-  type = Transient
-  solve_type = NEWTON
-  line_search = basic
-  start_time = 0
-  end_time = .2
-  dt = 0.1
-
-  petsc_options_iname = '-pc_type'
-  petsc_options_value = 'lu'
-
-  nl_rel_tol = 1e-4
-  nl_abs_tol = 1e-4
-  nl_max_its = 50
+    type = Transient
+    petsc_options_iname = '-pc_type -pc_hypre_type'
+    petsc_options_value = 'hypre boomeramg'
+    num_steps = 1
 []
 
 [Outputs]
-  
+  csv= true
   exodus = true
 []

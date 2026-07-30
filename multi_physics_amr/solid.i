@@ -1,103 +1,22 @@
 [Variables]
   [T]
-    initial_condition = 600.0
   []
 []
-
-[AuxVariables]
-  [heat_source]
-    family = MONOMIAL
-    order = CONSTANT
-    block = 'fuel'
-  []
-  [T_fluid]
-    initial_condition = ${coolant_inlet_temperature}
-  []
-  [heat_transfer_co_efficient]
-    initial_condition = 30000.0
-  []
-  [T_wall_send]
-    family = MONOMIAL
-    order = CONSTANT
-    initial_condition = 600.0
-    boundary = 'clad_outer'
-  []
-  [q_prime_send]
-    family = MONOMIAL
-    order = CONSTANT
-    block = 'fuel'
-  []
-  [rho_from_scm]
-    initial_condition = 700.0
-  []
-[]
-
-[AuxKernels]
-  [sample_wall_T]
-    type = SpatialUserObjectAux
-    variable = T_wall_send
-    user_object = layered_clad_T
-    boundary = 'clad_outer'
-  []
-  [compute_q_prime]
-    type = ParsedAux
-    variable = q_prime_send
-    coupled_variables = 'heat_source'
-    expression = 'heat_source * ${fparse pi * fuel_outer_radius * fuel_outer_radius}'
-    block = 'fuel'
-    execute_on = 'initial timestep_end'
-  []
-[]
-
 
 [Kernels]
-  [conduction]
+  [heat_conduction]
     type = HeatConduction
     variable = T
   []
-
   [time_T]
     type = HeatConductionTimeDerivative
     variable = T
   []
-  [source]
+  [heat_source_fuel]
     type = CoupledForce
     variable = T
-    v = heat_source # this is my q''' for sub channel as well
+    v = heat_source
     block = 'fuel'
-  []
-[]
-
-
-[UserObjects]
-  [layered_clad_T]
-    type = NearestPointLayeredSideAverage
-    variable = T
-    boundary = 'clad_outer'
-    direction = z
-    num_layers = ${num_heat_axial_layers}
-    points = '0 0 0'
-    execute_on = 'initial timestep_end'
-  []
-
-  [layered_q_prime]
-    type = NearestPointLayeredIntegral
-    variable = heat_source
-    direction = z
-    num_layers = ${num_heat_axial_layers}
-    points = '0 0 0'
-    block = 'fuel'
-    execute_on = 'initial timestep_end'
-  []
-[]
-
-[BCs]
-  [clad_to_coolant]
-    type = CoupledConvectiveHeatFluxBC
-    variable = T
-    boundary = 'clad_outer'
-    T_infinity = T_fluid
-    htc = heat_transfer_co_efficient
   []
 []
 
@@ -112,91 +31,118 @@
     type = GenericConstantMaterial
     block = 'gap'
     prop_names  = 'thermal_conductivity specific_heat density'
-    prop_values = '0.15  5000 3.5'    
+    prop_values = '1.5  5000 3.5'    
   []
   [clad_k]
     type = GenericConstantMaterial
     block = 'clad'
     prop_names  = 'thermal_conductivity specific_heat density'
-    prop_values = '22   350   6500' 
+    prop_values = '10   350   6500' 
   []
 []
 
+[AuxVariables]
+  [T_wall]
+    initial_condition = ${coolant_inlet_temperature}
+  []
+  [heat_source]
+    family = MONOMIAL
+    order = CONSTANT
+    initial_condition = 1e8
+    block = 'fuel'
+  []
+  [q]
+    family = MONOMIAL
+    order = CONSTANT
+    initial_condition = 0.0
+    block = 'fuel'
+  []
+  [q_prime]
+    family = MONOMIAL
+    order = CONSTANT
+    initial_condition = 0.0
+    block = 'fuel'
+  []
+[]
+
+[BCs]
+  [cladding_outer_bc]
+    type = MatchedValueBC
+    variable = T
+    v = T_wall
+    boundary = 'clad_outer'
+  []
+[]
 
 [Executioner]
   type = Transient
-  nl_abs_tol = 5e-6
-  nl_rel_tol = 5e-6
-  l_max_its = 50
-  petsc_options_iname = '-pc_type'
-  petsc_options_value = 'lu'
-  dtmin = 0.05
+[]
 
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 0.1
-    optimal_iterations = 15
-    iteration_window = 2
-    linear_iteration_ratio = 100
-    growth_factor = 2
-    cutback_factor = 0.5
+[AuxKernels]
+  [q]
+    type = SpatialUserObjectAux
+    variable = q
+    user_object = q_prime_uo
+    block = 'fuel'
   []
+  [q_prime] # divide by height of each averaging layer to get W/m from W
+    type = ParsedAux
+    variable = q_prime
+    coupled_variables = 'q'
+    expression = 'q / ${fparse active_core_height /num_heat_axial_layers}'
+    block = 'fuel'
+  []
+[]
 
-  solve_type=NEWTON
-  line_search = none
-  automatic_scaling = true
-
+[UserObjects]
+  [q_prime_uo]
+    type = NearestPointLayeredIntegral
+    variable = heat_source
+    block = 'fuel'
+    direction = z
+    points_file = '../pin_centers.txt'  # place holder 
+    num_layers = ${num_heat_axial_layers}
+    execute_on = 'initial timestep_begin'
+  []
 []
 
 [Postprocessors]
+  [conduction_power_integral]
+    type = ElementIntegralVariablePostprocessor
+    variable = heat_source
+    block = 'fuel'
+    execute_on = 'transfer'
+  []
   [max_fuel_T]
     type = ElementExtremeValue
     variable = T
     block = 'fuel'
   []
-  [max_T_fluid]
-    type = ElementExtremeValue
-    variable = T_fluid
-    value_type = max
-  []
+
   [max_clad_T]
     type = ElementExtremeValue
     variable = T
     block = 'clad'
   []
-
   [avg_fuel_T]
     type = ElementAverageValue
     variable = T
     block = 'fuel'
   []
-  [avg_coolant_T]
-    type = ElementAverageValue
-    variable = T_fluid
-  []
   [max_T_wall_send]
     type = SideExtremeValue
-    variable = T_wall_send
+    variable = T_wall
     boundary = 'clad_outer'
     value_type = max
   []
   [min_T_wall_send]
     type = SideExtremeValue
-    variable = T_wall_send
+    variable = T_wall
     boundary = 'clad_outer'
     value_type = min
   []
-  [min_T_fluid]
-    type = ElementExtremeValue
-    variable = T_fluid
-    value_type = min
-  []
-  [heat_source_integral]
-    type = ElementIntegralVariablePostprocessor
-    variable = heat_source
-    block = 'fuel'
-  []
 []
+
 
 [Outputs]
   exodus = true

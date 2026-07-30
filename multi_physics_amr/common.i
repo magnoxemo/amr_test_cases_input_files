@@ -37,7 +37,7 @@ coolant_outlet_pressure = 1.57e7          # Pa
 
 #================= Power Profile =====================
 
-total_reactor_power = 3000e6              # W
+total_reactor_power = 3000e6              # 3000 MW thermal
 num_assemblies = 121
 assembly_rows = 17
 assembly_columns = 17
@@ -52,7 +52,7 @@ power_per_fuel_pin = ${fparse total_reactor_power / total_fuel_pins}
 
 #================= Subchannel Flow ===================
 
-mass_flux = 3800  #kg/sec/m^2 # AI generated result from a google search. I need citation for this 
+mass_flux = 3800  #kg/sec/m^2 # google search. I need citation for this
 
 
 #================= Duct/Assembly Envelope =============

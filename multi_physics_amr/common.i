@@ -9,8 +9,8 @@ pin_pitch                 = 1.25984e-2                     # m
 fuel_outer_radius         = 0.39218e-2            # m
 cladding_inner_radius     = 0.40005e-2        # m
 cladding_outer_radius     = 0.45720e-2        # m
-guide_tube_inner_radius   = 0.3400e-2     # m
-guide_tube_outer_radius   = 0.54e-2      # m
+guide_tube_inner_radius   = 0.56134e-2      # m
+guide_tube_outer_radius   = 0.60198e-2      # m
 
 burnable_absorber_outer_radius = 0.56134e-2   # m
 
@@ -21,7 +21,7 @@ num_neutronics_axial_layers = 20
 num_bottom_layers  = 7
 num_middle_layers  = 6
 num_top_layers     = 7
-active_core_height = 1.9278               # m
+active_core_height = 3.8556               # m
 
 
 #================= Heat Conduction ===================
@@ -38,7 +38,7 @@ coolant_outlet_pressure = 1.57e7          # Pa
 #================= Power Profile =====================
 
 total_reactor_power = 3000e6              # 3000 MW thermal
-num_assemblies = 121
+num_assemblies = 191
 assembly_rows = 17
 assembly_columns = 17
 

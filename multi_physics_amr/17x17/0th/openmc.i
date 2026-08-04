@@ -1,0 +1,39 @@
+# ==========================================================
+# openmc.i 
+#  |-- solid.i  
+#       |-- sub_channel.i 
+# ==========================================================
+
+# ========================= specific to this model ==========================
+total_pins_in_this_model=9
+!include ../../common.i
+
+assembly_th_power  = ${fparse  total_pins_in_this_model*power_per_fuel_pin}
+
+!include ../../openmc.i
+[Mesh]
+  [file_mesh]
+    type = FileMeshGenerator
+    file = ../mesh_neutronics_in.e
+  []
+   length_unit = 'm'
+[]
+
+
+[Problem]
+  power := ${fparse assembly_th_power}
+  xml_directory=../model.xml
+  particles := 2000
+  temperature_blocks:= 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top al_clad guide_tube_water guide_center water'
+  density_blocks:= 'water guide_center guide_tube_water'
+[]
+
+
+[MultiApps]
+  [solid]
+    input_files := solid.i
+  []
+  [sub_channel]
+    input_files := sub_channel.i
+  []
+[]

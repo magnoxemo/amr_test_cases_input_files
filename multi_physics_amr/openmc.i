@@ -104,7 +104,7 @@
     from_multi_app = solid
     source_variable = T
     variable = temp
-    to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top water'
+    to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top guide_center al_clad guide_tube_water'
   []
 
   [linear_heat_rate_to_subchannel]
@@ -117,7 +117,6 @@
     use_bounding_boxes = false
     to_blocks = 'fuel_pins'
   []
-
 
   [fluid_temperature_from_subchannel]
     type = MultiAppGeneralFieldNearestLocationTransfer

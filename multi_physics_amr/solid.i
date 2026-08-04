@@ -39,6 +39,7 @@
     prop_names  = 'thermal_conductivity specific_heat density'
     prop_values = '10   350   6500' 
   []
+
 []
 
 [AuxVariables]

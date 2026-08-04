@@ -2,11 +2,11 @@
 
 [Mesh]
   [fuel_pin]
-    num_sectors_per_side := '2 2 2 2'
+    num_sectors_per_side := '4 4 4 4'
     ring_intervals := '1 1 1'
   []
   [guide_tube]
-    num_sectors_per_side := '2 2 2 2'
+    num_sectors_per_side := '4 4 4 4'
     ring_intervals := '2 1'
   []
   [extrude]

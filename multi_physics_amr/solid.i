@@ -20,6 +20,8 @@
   []
 []
 
+
+
 [Materials]
   [fuel_k]
     type = GenericConstantMaterial
@@ -39,7 +41,6 @@
     prop_names  = 'thermal_conductivity specific_heat density'
     prop_values = '10   350   6500' 
   []
-
 []
 
 [AuxVariables]
@@ -49,7 +50,7 @@
   [heat_source]
     family = MONOMIAL
     order = CONSTANT
-    initial_condition = 1e8
+    initial_condition = .5e6
     block = 'fuel'
   []
   [q]
@@ -63,6 +64,8 @@
     order = CONSTANT
     initial_condition = 0.0
     block = 'fuel'
+  []
+  [z]
   []
 []
 
@@ -93,6 +96,12 @@
     expression = 'q / ${fparse active_core_height /num_heat_axial_layers}'
     block = 'fuel'
   []
+  [z]
+    type = ParsedAux
+    variable = z
+    use_xyzt = true
+    expression = 'z'
+  []
 []
 
 [UserObjects]
@@ -108,6 +117,25 @@
 []
 
 [Postprocessors]
+  [z_location_of_T_max_fuel]
+    type = ElementExtremeValue
+    proxy_variable = T
+    variable = z
+    block = 'fuel'
+  []
+  [z_location_of_T_max_clad]
+    type = ElementExtremeValue
+    proxy_variable = T
+    variable = z
+    block = 'clad'
+  []
+  [z_location_of_T_max_wall]
+    type = ElementExtremeValue
+    proxy_variable = T_wall
+    variable = z
+    block = 'clad'
+  []
+
   [conduction_power_integral]
     type = ElementIntegralVariablePostprocessor
     variable = heat_source

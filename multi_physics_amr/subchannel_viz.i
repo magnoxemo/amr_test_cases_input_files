@@ -57,7 +57,7 @@
 []
 
 [Executioner]
-  type = Transient
+  type = Steady
 []
 
 [Outputs]

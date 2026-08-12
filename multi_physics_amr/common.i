@@ -9,24 +9,24 @@ pin_pitch                 = 1.25984e-2                     # m
 fuel_outer_radius         = 0.39218e-2            # m
 cladding_inner_radius     = 0.40005e-2        # m
 cladding_outer_radius     = 0.45720e-2        # m
-guide_tube_inner_radius   = 0.56134e-2      # m
-guide_tube_outer_radius   = 0.60198e-2      # m
+guide_tube_inner_radius   = 0.3400e-2     # m
+guide_tube_outer_radius   = 0.54e-2    # m
 
 burnable_absorber_outer_radius = 0.56134e-2   # m
 
 
 #================= Neutronics ========================
 
-num_neutronics_axial_layers = 20
-num_bottom_layers  = 7
-num_middle_layers  = 6
-num_top_layers     = 7
+num_neutronics_axial_layers = 10
+num_bottom_layers  = 3
+num_middle_layers  = 4
+num_top_layers     = 3
 active_core_height = 3.8556               # m
 
 
 #================= Heat Conduction ===================
 
-axial_layer_refinement = 3
+axial_layer_refinement =8
 num_heat_axial_layers = ${fparse axial_layer_refinement * num_neutronics_axial_layers}
 
 

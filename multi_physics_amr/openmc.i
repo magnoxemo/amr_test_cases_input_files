@@ -22,7 +22,21 @@
     family = MONOMIAL
     order = CONSTANT
   []
+  [timestep_begin_heat_source]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [heat_source_diff_from_last_step]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [z]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel_bottom fuel_middle fuel_top'
+  []
 []
+
 
 [AuxKernels]
   [cell_temperature]
@@ -33,6 +47,25 @@
     type = CellDensityAux
     variable = cell_density
   []
+  [copy_timestep_begin_heat_source]
+    type = CopyValueAux
+    source = 'heat_source'
+    variable = 'timestep_begin_heat_source'
+    execute_on = 'timestep_begin'
+  []
+  [compute_heat_source_diff_from_last_step]
+    type = ParsedAux
+    variable = 'heat_source_diff_from_last_step'
+    coupled_variables = 'heat_source timestep_begin_heat_source'
+    expression = 'heat_source - timestep_begin_heat_source'
+    execute_on = 'timestep_end'
+  []
+  [z]
+    type = ParsedAux
+    variable = z
+    use_xyzt = true
+    expression = 'z'
+  []
 []
 
 
@@ -40,7 +73,6 @@
   type = OpenMCCellAverageProblem
   power = ${fparse assembly_th_power}
   verbose = true
-
   temperature_blocks  = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top water'
   temperature_variables = temp
   density_blocks= 'water'
@@ -50,18 +82,23 @@
   source_rate_normalization = kappa_fission
   relaxation    = robbins_monro
   scaling = 100
-  particles = 50000
-  inactive_batches = 200
-  batches = 1000
+  particles = 100000
+  inactive_batches = 100
+  batches = 500
+  max_batches=1500
+  
 
 
   [Tallies]
     [heat_source]
       type = MeshTally
-      score   = 'kappa_fission flux fission scatter absorption'
-      name    = "heat_source neutron_flux fission_reaction_rate scattering_reaction_rate absorption_reaction_rate"
+      score   = 'kappa_fission'
+      name    = "heat_source"
       normalize_by_global_tally = false
       output  = 'unrelaxed_tally_std_dev unrelaxed_tally_rel_error'
+      trigger = rel_err
+      trigger_threshold = 2.5e-2
+      trigger_ignore_zeros='true'
     []
   []
 []
@@ -69,7 +106,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 50
+  num_steps = 30
 []
 
 
@@ -92,7 +129,7 @@
 
 [Transfers]
   [heat_source_to_solid]
-    type = MultiAppGeneralFieldNearestLocationTransfer
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
     to_multi_app = solid
     source_variable = heat_source
     variable = heat_source
@@ -100,11 +137,11 @@
     to_postprocessors_to_be_preserved   = conduction_power_integral
   []
   [solid_temperature_from_conduction]
-    type = MultiAppGeneralFieldNearestLocationTransfer
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
     from_multi_app = solid
     source_variable = T
     variable = temp
-    to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top guide_center al_clad guide_tube_water'
+    to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top'
   []
 
   [linear_heat_rate_to_subchannel]
@@ -153,6 +190,12 @@
     variable = heat_source
     execute_on = 'transfer timestep_end'
   [] 
+  [z_location_of_max_power]
+    type = ElementExtremeValue
+    proxy_variable = heat_source
+    variable = z
+    block = 'fuel_bottom fuel_middle fuel_top'
+  []
   [k]
     type = KEigenvalue
     value_type = 'combined'
@@ -197,12 +240,7 @@
     block = 'water'
     value_type = min
   []
-
-  
 []
-
-
-
 
 [Outputs]
   exodus = true

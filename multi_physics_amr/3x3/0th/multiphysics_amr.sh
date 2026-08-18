@@ -1,18 +1,15 @@
 #!/bin/bash
 #SBATCH --partition=pre
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=64
-#SBATCH --cpus-per-task=2
+#SBATCH --ntasks-per-node=128
 #SBATCH --mem-per-cpu=0
-#SBATCH --time=0-23:00:00
-#SBATCH --job-name=0th_r
-#SBATCH --error=0th_r.%J.err
-#SBATCH --output=0th_r.%J.out
+#SBATCH --time=0-24:00:00
+#SBATCH --job-name=base_case_uniform
+#SBATCH --error=base_case_uniform.%J.err
+#SBATCH --output=base_case_uniform.%J.out
 
 module load openmpi
 export UCX_POSIX_USE_PROC_LINK=n
-
-let threads=${SLURM_CPUS_PER_TASK}*2
 
 export cross_sections=/scratch/eahammed/cross_sections/
 export image_path=/scratch/eahammed/software/cardinal_dev/cardinal.sif
@@ -27,4 +24,5 @@ srun apptainer exec \
   --bind ${bind_path}:${bind_path} \
   --bind ${cross_sections}:${cross_sections} \
   ${image_path} bash -c "export OPENMC_CROSS_SECTIONS=${cross_sections}/endfb-viii.0-hdf5/cross_sections.xml && \
-  cd ${input_path} && ${CARDINAL} -i openmc.i --n-threads=${threads}"
+  cd ${input_path} && ${CARDINAL} -i openmc_mesh.i --mesh-only --n-threads=16 && \
+  ${CARDINAL} -i openmc.i --n-threads=16"

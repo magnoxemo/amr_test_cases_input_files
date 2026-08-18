@@ -10,9 +10,9 @@
     ring_intervals = '6 1 2'
     ring_block_ids = '1 2 3'
     background_block_ids = '4'
-    quad_center_elements = true
     preserve_volumes = true
     flat_side_up = true
+    create_outward_interface_boundaries = true
   []
 
   [guide_tube]
@@ -22,14 +22,14 @@
     ring_radii = '${guide_tube_inner_radius} ${guide_tube_outer_radius}'
     ring_intervals = '6 1'
     polygon_size = ${fparse pin_pitch / 2.0}
-    ring_block_ids = '101 111 121'
-    ring_block_names = 'guide_center guide_tube_water al_clad'
+    ring_block_ids = '101 111'
+    ring_block_names = 'guide_tube_water al_clad'
     background_block_ids = '4'
     background_block_names = 'water'
     flat_side_up = true
-    preserve_volumes = false
+    create_outward_interface_boundaries = true
+    quad_center_elements= true
 
-    create_outward_interface_boundaries = false
   []
   [assembly]
     type = PatternedCartesianMeshGenerator

@@ -20,11 +20,12 @@
   []
   [guide_tube_water]
       type = GenericConstantMaterial
-      block = 'guide_tube_water guide_center'
+      block = 'guide_tube_water'
       prop_names  = 'thermal_conductivity specific_heat density'
-      prop_values = '0.6   4180   1000'
+      prop_values = '0.6   4800   1000'
   []
 []
+
 
 [UserObjects]
   [q_prime_uo]

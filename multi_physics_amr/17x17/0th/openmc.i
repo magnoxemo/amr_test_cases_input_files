@@ -5,16 +5,18 @@
 # ==========================================================
 
 # ========================= specific to this model ==========================
-total_pins_in_this_model=9
+total_pins_in_this_model=289
 !include ../../common.i
 
 assembly_th_power  = ${fparse  total_pins_in_this_model*power_per_fuel_pin}
 
 !include ../../openmc.i
+
+
 [Mesh]
   [file_mesh]
     type = FileMeshGenerator
-    file = ../mesh_neutronics_in.e
+    file = openmc_mesh_in.e
   []
    length_unit = 'm'
 []
@@ -23,9 +25,16 @@ assembly_th_power  = ${fparse  total_pins_in_this_model*power_per_fuel_pin}
 [Problem]
   power := ${fparse assembly_th_power}
   xml_directory=../model.xml
-  particles := 2000
-  temperature_blocks:= 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top al_clad guide_tube_water guide_center water'
-  density_blocks:= 'water guide_center guide_tube_water'
+  particles := 500000
+  temperature_blocks:= 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top al_clad guide_tube_water water'
+  density_blocks:= 'water'
+[]
+
+
+[Transfers]
+  [solid_temperature_from_conduction]
+    to_blocks := 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top al_clad guide_tube_water'
+  []
 []
 
 

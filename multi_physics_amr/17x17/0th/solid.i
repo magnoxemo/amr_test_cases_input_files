@@ -18,11 +18,22 @@
     prop_names  = 'thermal_conductivity specific_heat density'
     prop_values = '10   350   6500' 
   []
-  [guide_tube_water]
+
+  # [guide_tube_water]
+  #     type = GenericConstantMaterial
+  #     block = 'guide_tube_water'
+  #     prop_names  = 'thermal_conductivity specific_heat density'
+  #     prop_values = '0.6   4800   1000'
+  # []
+
+  # For cases where control rod is fully inserted there is no water in the guide tube.
+  # So we just need to replace the guide water with B4C
+  
+  [boron_carbide]
       type = GenericConstantMaterial
-      block = 'guide_tube_water'
+      block = 'boron_carbide'
       prop_names  = 'thermal_conductivity specific_heat density'
-      prop_values = '0.6   4800   1000'
+      prop_values = '18   2700   2520'
   []
 []
 

@@ -7,7 +7,8 @@
   []
   [guide_tube]
     num_sectors_per_side :='4 4 4 4'
-    ring_intervals := '2 1'
+    ring_intervals := '1 1'
+    quad_center_elements:= false
   []
   [extrude]
     heights := '${fparse active_core_height * num_bottom_layers / num_neutronics_axial_layers} ${fparse active_core_height * num_middle_layers / num_neutronics_axial_layers} ${fparse active_core_height * num_top_layers / num_neutronics_axial_layers}'

@@ -30,6 +30,10 @@
     family = MONOMIAL
     order = CONSTANT
   []
+  [heat_source_convergence]
+    family = MONOMIAL
+    order = CONSTANT
+  []
   [z]
     family = MONOMIAL
     order = CONSTANT
@@ -60,6 +64,13 @@
     expression = 'heat_source - timestep_begin_heat_source'
     execute_on = 'timestep_end'
   []
+  [compute_heat_source_relative_diff]
+    type = ParsedAux
+    variable = 'heat_source_convergence'
+    coupled_variables = 'heat_source heat_source_diff_from_last_step'
+    expression = 'heat_source_diff_from_last_step / heat_source'
+    execute_on = 'timestep_end'
+  []
   [z]
     type = ParsedAux
     variable = z
@@ -84,10 +95,7 @@
   scaling = 100
   particles = 100000
   inactive_batches = 100
-  batches = 500
-  max_batches=1500
-  
-
+  batches = 1500
 
   [Tallies]
     [heat_source]
@@ -96,9 +104,9 @@
       name    = "heat_source"
       normalize_by_global_tally = false
       output  = 'unrelaxed_tally_std_dev unrelaxed_tally_rel_error'
-      trigger = rel_err
-      trigger_threshold = 2.5e-2
-      trigger_ignore_zeros='true'
+      # trigger = rel_err
+      # trigger_threshold = 2.5e-2
+      # trigger_ignore_zeros='true'
     []
   []
 []
@@ -185,11 +193,16 @@
 []
 
 [Postprocessors]
+  [heat_source_convergence_post_processor]
+    type=ElementL2Norm
+    variable=heat_source_convergence
+    execute_on=timestep_end
+  []
   [openmc_power_integral]
     type = ElementIntegralVariablePostprocessor
     variable = heat_source
     execute_on = 'transfer timestep_end'
-  [] 
+  []
   [z_location_of_max_power]
     type = ElementExtremeValue
     proxy_variable = heat_source

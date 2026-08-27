@@ -3,7 +3,7 @@
 [Mesh]
 
   [guide_tube]
-    ring_block_names := 'boron_carbide al_clad' # Control rod inserted 
+    ring_block_names := 'guide_tube_water al_clad' # Control rod inserted
   []
 
   [assembly]

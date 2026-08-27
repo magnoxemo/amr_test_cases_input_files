@@ -96,6 +96,10 @@
   particles = 100000
   inactive_batches = 100
   batches = 1500
+  delta_tracking = true
+  delta_pointwise_temps=true
+  delta_pointwise_densities=true
+
 
   [Tallies]
     [heat_source]
@@ -143,6 +147,8 @@
     variable = heat_source
     from_postprocessors_to_be_preserved = openmc_power_integral
     to_postprocessors_to_be_preserved   = conduction_power_integral
+    greedy_search = true
+    use_bounding_boxes = false
   []
   [solid_temperature_from_conduction]
     type = MultiAppGeneralFieldShapeEvaluationTransfer
@@ -150,6 +156,8 @@
     source_variable = T
     variable = temp
     to_blocks = 'fuel_bottom fuel_middle fuel_top gas_gap_bottom gas_gap_middle gas_gap_top clad_bottom clad_middle clad_top'
+    greedy_search = true
+    use_bounding_boxes = false
   []
 
   [linear_heat_rate_to_subchannel]
@@ -197,6 +205,7 @@
     type=ElementL2Norm
     variable=heat_source_convergence
     execute_on=timestep_end
+    block="fuel_bottom fuel_middle fuel_top"
   []
   [openmc_power_integral]
     type = ElementIntegralVariablePostprocessor

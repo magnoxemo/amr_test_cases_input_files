@@ -21,3 +21,6 @@ __pyache__/
 *.pdf
 submit_jobs.py
 garbage_clean.py
+
+*.err
+*.out

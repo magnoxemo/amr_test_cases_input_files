@@ -1,0 +1,3 @@
+[submodule "multi_physics_amr/neutronics_models/cardinal_amr"]
+	path = multi_physics_amr/neutronics_models/cardinal_amr
+	url = https://github.com/neams-th-coe/cardinal_amr.git

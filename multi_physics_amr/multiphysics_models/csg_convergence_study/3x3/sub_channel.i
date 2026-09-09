@@ -5,14 +5,7 @@ assembly_th_power= ${fparse 9 * power_per_fuel_pin}
 
 [QuadSubChannelMesh]
   [subchannel]
-    nx :=4 
+    nx :=4
     ny :=4
-  []
-[]
-
-[ICs]
-  [q_prime_IC]
-    power := ${assembly_th_power}
-    filename := '../power_profile.txt'   
   []
 []

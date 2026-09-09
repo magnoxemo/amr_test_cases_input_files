@@ -8,6 +8,12 @@
   length_unit = 'm'
 []
 
+
+[Problem]
+  particles := 200000
+[]
+
+
 [MultiApps]
   [solid]
     input_files := solid.i

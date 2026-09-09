@@ -7,6 +7,6 @@ assembly_th_power  = ${fparse  total_pins_in_this_model*power_per_fuel_pin}
 [Problem]
   power := ${fparse assembly_th_power}
   xml_directory=model.xml
-  particles := 20000
+  # particles := 20000
 []
 

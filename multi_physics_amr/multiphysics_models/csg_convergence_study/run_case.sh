@@ -1,4 +1,4 @@
-: "${N_THREADS:=16}"
+: "${N_THREADS:=2}"
 
 module load openmpi
 export UCX_POSIX_USE_PROC_LINK=n
@@ -6,7 +6,7 @@ export UCX_POSIX_USE_PROC_LINK=n
 export cross_sections=/scratch/eahammed/cross_sections/
 export image_path=/scratch/eahammed/software/cardinal_dev/cardinal.sif
 
-export bind_path=$(realpath ${PWD}/../../../)
+export bind_path="/scratch/eahammed/amr_test_cases_input_files/multi_physics_amr/"
 export input_path=${PWD}
 
 CARDINAL=/opt/cardinal-build/cardinal/cardinal-opt

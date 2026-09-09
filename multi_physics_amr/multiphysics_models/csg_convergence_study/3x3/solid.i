@@ -12,7 +12,7 @@
 
 [UserObjects]
   [q_prime_uo]
-    points_file := '../pincenters.txt'
+    points_file := 'pincenters.txt'
   []
 []
 

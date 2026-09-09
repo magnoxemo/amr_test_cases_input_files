@@ -1,1 +1,0 @@
-../../../neutronics_models/cardinal_amr/models/lwr/3x3_lattice/make_openmc_model.py

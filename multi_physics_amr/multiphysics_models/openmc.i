@@ -94,8 +94,8 @@
   relaxation    = robbins_monro
   scaling = 100
   particles = 100000
-  inactive_batches = 100
-  batches = 150
+  inactive_batches = 500
+  batches = 1500
 
   [Tallies]
     [heat_source]

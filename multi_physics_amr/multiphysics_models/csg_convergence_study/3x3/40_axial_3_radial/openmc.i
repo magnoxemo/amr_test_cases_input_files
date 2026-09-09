@@ -10,9 +10,9 @@
 
 [MultiApps]
   [solid]
-    input_files := ../solid.i
+    input_files := solid.i
   []
   [sub_channel]
-    input_files := ../sub_channel.i
+    input_files := sub_channel.i
   []
 []

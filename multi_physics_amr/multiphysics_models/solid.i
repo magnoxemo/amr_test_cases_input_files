@@ -21,7 +21,6 @@
 []
 
 
-
 [Materials]
   [fuel_k]
     type = GenericConstantMaterial

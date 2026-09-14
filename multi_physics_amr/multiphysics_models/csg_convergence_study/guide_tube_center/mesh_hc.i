@@ -1,4 +1,5 @@
 !include ../../../mesh_hc.i
+
 [Mesh]
   [assembly]
     inputs := 'fuel_pin guide_tube'

@@ -9,7 +9,7 @@
 []
 
 [Problem]
-  particles := 100000
+  particles := 120000
 []
 
 

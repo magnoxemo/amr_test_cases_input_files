@@ -24,3 +24,5 @@ garbage_clean.py
 
 *.err
 *.out
+*.png
+*.ipynb

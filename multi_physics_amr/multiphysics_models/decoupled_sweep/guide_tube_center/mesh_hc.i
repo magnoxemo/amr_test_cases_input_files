@@ -1,0 +1,13 @@
+!include ../../mesh_hc.i
+
+[Mesh]
+  [assembly]
+    inputs := 'fuel_pin guide_tube'
+    pattern :='0 0 0;
+               0 1 0;
+               0 0 0'
+  []
+  [clad_outer_sideset]
+    primary_block = '3 111'
+  []
+[]

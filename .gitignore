@@ -26,3 +26,4 @@ garbage_clean.py
 *.out
 *.png
 *.ipynb
+*tmp_jit*

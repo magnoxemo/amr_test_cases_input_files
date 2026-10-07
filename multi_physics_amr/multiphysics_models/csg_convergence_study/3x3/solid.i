@@ -1,5 +1,6 @@
 
 !include ../../common.i
+!include csg_geometry.i
 !include ../../solid.i
 
 [UserObjects]

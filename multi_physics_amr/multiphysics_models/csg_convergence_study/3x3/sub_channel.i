@@ -1,4 +1,5 @@
 !include ../../common.i
+!include csg_geometry.i
 !include ../../sub_channel.i 
 
 assembly_th_power= ${fparse 9 * power_per_fuel_pin}
